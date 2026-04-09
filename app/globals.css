@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --htp-red: #C73A34;
+  --htp-navy: #2E3F52;
+  --htp-ink: #1F2328;
+  --htp-bg: #F6F1EC;
+  --htp-cream: #FBF7F3;
+  --htp-line: #D8D0C8;
+  --htp-success: #1E7A5A;
+  --htp-warning: #B7791F;
+  --htp-danger: #B3261E;
+  --radius-btn: 12px;
+  --radius-card: 16px;
+}
+
+body {
+  color: var(--htp-ink);
+  background: var(--htp-bg);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getFoodTrucks, CMS_REVALIDATE } from "@/lib/cms";
+
+export const revalidate = CMS_REVALIDATE;
 
 export const metadata: Metadata = {
   title: "Our Food Trucks | Hilltop Truck Park",
   description: "Discover the rotating lineup of food trucks at Hilltop Truck Park in Northlake, TX.",
 };
 
-export default function OurFoodTrucksPage() {
+export default async function OurFoodTrucksPage() {
+  const trucks = await getFoodTrucks();
+
   return (
     <section className="py-24 px-4">
       <div className="max-w-content mx-auto text-center">
@@ -49,27 +54,18 @@ export default function OurFoodTrucksPage() {
           Our Trucks
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { name: "Taco Truck", cuisine: "Tex-Mex", blurb: "Fresh tacos, burritos, and more." },
-            { name: "BBQ Pit Stop", cuisine: "BBQ", blurb: "Slow-smoked meats and classic sides." },
-            { name: "Burgers & Fries", cuisine: "American", blurb: "Juicy burgers and hand-cut fries." },
-            { name: "Sushi Roll", cuisine: "Japanese", blurb: "Fresh rolls and poke bowls." },
-            { name: "Sweet Treats", cuisine: "Desserts", blurb: "Ice cream, shaved ice, and more." },
-            { name: "Pizza on Wheels", cuisine: "Italian", blurb: "Wood-fired pies and calzones." },
-            { name: "Pho King Good", cuisine: "Vietnamese", blurb: "Noodle bowls and banh mi." },
-            { name: "Smokehouse", cuisine: "BBQ", blurb: "Texas-style smoked brisket." },
-            { name: "Breakfast Burrito Co", cuisine: "Breakfast", blurb: "Morning fuel on the go." },
-            { name: "Elote & More", cuisine: "Street Food", blurb: "Mexican street corn and snacks." },
-          ].map((truck, i) => (
+          {trucks.map((truck) => (
             <div
-              key={i}
+              key={truck.id}
               className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-6"
             >
               <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-1">
                 {truck.name}
               </h3>
               <p className="text-sm text-htp-red mb-3">{truck.cuisine}</p>
-              <p className="text-htp-ink text-sm leading-[1.55]">{truck.blurb}</p>
+              {truck.blurb && (
+                <p className="text-htp-ink text-sm leading-[1.55]">{truck.blurb}</p>
+              )}
             </div>
           ))}
         </div>

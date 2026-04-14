@@ -1,42 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getEvent, getEventSlugs, CMS_REVALIDATE } from "@/lib/cms";
 
-const events: Record<
-  string,
-  { title: string; date: string; description: string }
-> = {
-  "live-music-night": {
-    title: "Live Music Night",
-    date: "Fridays",
-    description:
-      "Join us for live music, great food, and a lively atmosphere under the string lights. Local bands and artists take the stage while our food trucks serve up the best eats in DFW.",
-  },
-  "twilight-market": {
-    title: "Twilight Market",
-    date: "Select Saturdays",
-    description:
-      "Local vendors, fresh produce, and community vibes as the sun sets. Browse handmade goods, pick up seasonal produce, and enjoy the Hilltop Truck Park atmosphere.",
-  },
-  "foam-party": {
-    title: "Foam Party",
-    date: "Summer weekends",
-    description:
-      "Summer foam parties for the whole family. Cool off, have fun, and make memories. Check our calendar for upcoming foam party dates.",
-  },
-};
+export const revalidate = CMS_REVALIDATE;
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return Object.keys(events).map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await getEventSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const event = events[slug];
+  const event = await getEvent(slug);
   if (!event) return { title: "Event | Hilltop Truck Park" };
   return {
     title: `${event.title} | Hilltop Truck Park`,
@@ -46,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EventDetailPage({ params }: Props) {
   const { slug } = await params;
-  const event = events[slug];
+  const event = await getEvent(slug);
   if (!event) notFound();
 
   return (
@@ -62,7 +42,7 @@ export default async function EventDetailPage({ params }: Props) {
           <h1 className="font-display text-htp-h1 md:text-4xl text-htp-navy uppercase tracking-[0.04em] mb-4">
             {event.title}
           </h1>
-          <p className="text-htp-ink/80 mb-6">{event.date}</p>
+          <p className="text-htp-ink/80 mb-6">{event.date_label}</p>
           <p className="text-htp-ink leading-[1.55] mb-8">{event.description}</p>
           <Link
             href="/contact-us"

@@ -1,33 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getEvents, CMS_REVALIDATE } from "@/lib/cms";
+
+export const revalidate = CMS_REVALIDATE;
 
 export const metadata: Metadata = {
   title: "Events | Hilltop Truck Park",
   description: "Upcoming events at Hilltop Truck Park in Northlake, TX.",
 };
 
-const events = [
-  {
-    slug: "live-music-night",
-    title: "Live Music Night",
-    description: "Join us for live music, great food, and a lively atmosphere under the string lights.",
-    date: "Fridays",
-  },
-  {
-    slug: "twilight-market",
-    title: "Twilight Market",
-    description: "Local vendors, fresh produce, and community vibes as the sun sets.",
-    date: "Select Saturdays",
-  },
-  {
-    slug: "foam-party",
-    title: "Foam Party",
-    description: "Summer foam parties for the whole family. Check dates for upcoming events.",
-    date: "Summer weekends",
-  },
-];
+export default async function EventsPage() {
+  const events = await getEvents();
 
-export default function EventsPage() {
   return (
     <section className="py-24 px-4">
       <div className="max-w-content mx-auto text-center">
@@ -54,7 +38,7 @@ export default function EventsPage() {
               <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-2">
                 {event.title}
               </h2>
-              <p className="text-sm text-htp-ink/80 mb-4">{event.date}</p>
+              <p className="text-sm text-htp-ink/80 mb-4">{event.date_label}</p>
               <p className="text-htp-ink leading-[1.55] mb-6">{event.description}</p>
               <span className="text-htp-red font-medium hover:underline">Learn more →</span>
             </Link>

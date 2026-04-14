@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getBlogPosts, CMS_REVALIDATE } from "@/lib/cms";
+
+export const revalidate = CMS_REVALIDATE;
 
 export const metadata: Metadata = {
   title: "Blog | Hilltop Truck Park",
   description: "News, updates, and announcements from Hilltop Truck Park in Northlake, TX.",
 };
 
-const posts = [
-  {
-    slug: "2025-up-coming",
-    title: "2025 Up & Coming!",
-    excerpt:
-      "A peek into what to expect for 2025 at Hilltop Truck Park — infrared heaters, new lighting, enclosures, and so many events.",
-    date: "2025-01-17",
-  },
-];
+export default async function BlogPage() {
+  const posts = await getBlogPosts();
 
-export default function BlogPage() {
   return (
     <section className="py-24 px-4">
       <div className="max-w-content mx-auto text-center">
@@ -34,17 +29,21 @@ export default function BlogPage() {
                   {post.title}
                 </Link>
               </h2>
-              <time
-                dateTime={post.date}
-                className="text-sm text-htp-ink/80 block mb-4"
-              >
-                {new Date(post.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-              <p className="text-htp-ink leading-[1.55]">{post.excerpt}</p>
+              {post.published_at && (
+                <time
+                  dateTime={post.published_at}
+                  className="text-sm text-htp-ink/80 block mb-4"
+                >
+                  {new Date(post.published_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              )}
+              {post.excerpt && (
+                <p className="text-htp-ink leading-[1.55]">{post.excerpt}</p>
+              )}
               <Link
                 href={`/blog/${post.slug}`}
                 className="inline-block mt-4 text-htp-red hover:underline font-medium"

@@ -12,6 +12,8 @@ const NAV_ITEMS = [
   { href: "/admin/events", label: "Events", icon: "★" },
   { href: "/admin/trucks", label: "Food Trucks", icon: "◉" },
   { href: "/admin/pages", label: "Page Content", icon: "☰" },
+  { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
+  { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },
 ];
 
 function NavLink({ href, label, icon }: { href: string; label: string; icon: string }) {

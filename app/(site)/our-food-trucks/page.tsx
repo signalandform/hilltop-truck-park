@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getFoodTrucks, CMS_REVALIDATE } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
@@ -57,15 +58,28 @@ export default async function OurFoodTrucksPage() {
           {trucks.map((truck) => (
             <div
               key={truck.id}
-              className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-6"
+              className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden"
             >
-              <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-1">
-                {truck.name}
-              </h3>
-              <p className="text-sm text-htp-red mb-3">{truck.cuisine}</p>
-              {truck.blurb && (
-                <p className="text-htp-ink text-sm leading-[1.55]">{truck.blurb}</p>
+              {truck.image_url && (
+                <div className="relative w-full aspect-[4/3]">
+                  <Image
+                    src={truck.image_url}
+                    alt={truck.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
               )}
+              <div className="p-6">
+                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-1">
+                  {truck.name}
+                </h3>
+                <p className="text-sm text-htp-red mb-3">{truck.cuisine}</p>
+                {truck.blurb && (
+                  <p className="text-htp-ink text-sm leading-[1.55]">{truck.blurb}</p>
+                )}
+              </div>
             </div>
           ))}
         </div>

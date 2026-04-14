@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getEvents, CMS_REVALIDATE } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
@@ -33,14 +34,27 @@ export default async function EventsPage() {
             <Link
               key={event.slug}
               href={`/events/${event.slug}`}
-              className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-8 hover:border-htp-red/50 transition-colors block"
+              className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden hover:border-htp-red/50 transition-colors block"
             >
-              <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-2">
-                {event.title}
-              </h2>
-              <p className="text-sm text-htp-ink/80 mb-4">{event.date_label}</p>
-              <p className="text-htp-ink leading-[1.55] mb-6">{event.description}</p>
-              <span className="text-htp-red font-medium hover:underline">Learn more →</span>
+              {event.image_url && (
+                <div className="relative w-full aspect-[16/9]">
+                  <Image
+                    src={event.image_url}
+                    alt={event.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              )}
+              <div className="p-8">
+                <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-2">
+                  {event.title}
+                </h2>
+                <p className="text-sm text-htp-ink/80 mb-4">{event.date_label}</p>
+                <p className="text-htp-ink leading-[1.55] mb-6">{event.description}</p>
+                <span className="text-htp-red font-medium hover:underline">Learn more →</span>
+              </div>
             </Link>
           ))}
         </div>

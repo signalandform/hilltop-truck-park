@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 type Form = {
   name: string;
@@ -148,17 +149,13 @@ export default function TruckEditor() {
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Image URL</label>
-            <input
-              type="text"
-              value={form.image_url}
-              onChange={(e) => update("image_url", e.target.value)}
-              placeholder="Optional"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
         </div>
+
+        <ImageUpload
+          value={form.image_url}
+          onChange={(url) => update("image_url", url)}
+          folder="trucks"
+        />
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Blurb</label>

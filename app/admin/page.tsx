@@ -9,31 +9,49 @@ type Counts = {
   events: number;
   trucks: number;
   pages: number;
+  contacts: number;
+  vendors: number;
 };
 
-const CARDS = [
+const CONTENT_CARDS = [
   { key: "blog" as const, label: "Blog Posts", href: "/admin/blog", description: "Create and manage blog posts" },
   { key: "events" as const, label: "Events", href: "/admin/events", description: "Manage upcoming events" },
   { key: "trucks" as const, label: "Food Trucks", href: "/admin/trucks", description: "Update the truck lineup" },
   { key: "pages" as const, label: "Page Content", href: "/admin/pages", description: "Edit site copy and sections" },
 ];
 
+const INBOX_CARDS = [
+  { key: "contacts" as const, label: "Contact Messages", href: "/admin/contacts", description: "View contact form submissions" },
+  { key: "vendors" as const, label: "Vendor Requests", href: "/admin/vendors", description: "View vendor space requests" },
+];
+
 export default function AdminDashboard() {
-  const [counts, setCounts] = useState<Counts>({ blog: 0, events: 0, trucks: 0, pages: 0 });
+  const [counts, setCounts] = useState<Counts>({ blog: 0, events: 0, trucks: 0, pages: 0, contacts: 0, vendors: 0 });
+  const [unread, setUnread] = useState({ contacts: 0, vendors: 0 });
 
   useEffect(() => {
     async function load() {
-      const [b, e, t, p] = await Promise.all([
+      const [b, e, t, p, c, v, cu, vu] = await Promise.all([
         supabase.from("cms_blog_posts").select("id", { count: "exact", head: true }),
         supabase.from("cms_events").select("id", { count: "exact", head: true }),
         supabase.from("cms_food_trucks").select("id", { count: "exact", head: true }),
         supabase.from("cms_page_content").select("id", { count: "exact", head: true }),
+        supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
+        supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
       ]);
       setCounts({
         blog: b.count ?? 0,
         events: e.count ?? 0,
         trucks: t.count ?? 0,
         pages: p.count ?? 0,
+        contacts: c.count ?? 0,
+        vendors: v.count ?? 0,
+      });
+      setUnread({
+        contacts: cu.count ?? 0,
+        vendors: vu.count ?? 0,
       });
     }
     load();
@@ -44,8 +62,9 @@ export default function AdminDashboard() {
       <h1 className="text-2xl font-bold text-slate-900 mb-1">Dashboard</h1>
       <p className="text-slate-500 text-sm mb-8">Manage your Hilltop Truck Park website content.</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {CARDS.map((card) => (
+      <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-3">Content</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        {CONTENT_CARDS.map((card) => (
           <Link
             key={card.key}
             href={card.href}
@@ -55,6 +74,30 @@ export default function AdminDashboard() {
               {counts[card.key]}
             </div>
             <div className="text-sm font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
+              {card.label}
+            </div>
+            <div className="text-xs text-slate-500 mt-1">{card.description}</div>
+          </Link>
+        ))}
+      </div>
+
+      <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-3">Inbox</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {INBOX_CARDS.map((card) => (
+          <Link
+            key={card.key}
+            href={card.href}
+            className="bg-white rounded-xl border border-slate-200 p-6 hover:border-slate-300 hover:shadow-sm transition-all group"
+          >
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-slate-900">{counts[card.key]}</span>
+              {unread[card.key] > 0 && (
+                <span className="text-xs font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                  {unread[card.key]} new
+                </span>
+              )}
+            </div>
+            <div className="text-sm font-medium text-slate-900 group-hover:text-blue-600 transition-colors mt-1">
               {card.label}
             </div>
             <div className="text-xs text-slate-500 mt-1">{card.description}</div>

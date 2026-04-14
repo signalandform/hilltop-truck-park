@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getEvent, getEventSlugs, CMS_REVALIDATE } from "@/lib/cms";
 
@@ -38,7 +39,19 @@ export default async function EventDetailPage({ params }: Props) {
         >
           ← Back to Events
         </Link>
-        <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-8 max-w-2xl mx-auto">
+        <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden max-w-2xl mx-auto">
+          {event.image_url && (
+            <div className="relative w-full aspect-[16/9]">
+              <Image
+                src={event.image_url}
+                alt={event.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 672px"
+              />
+            </div>
+          )}
+          <div className="p-8">
           <h1 className="font-display text-htp-h1 md:text-4xl text-htp-navy uppercase tracking-[0.04em] mb-4">
             {event.title}
           </h1>
@@ -50,6 +63,7 @@ export default async function EventDetailPage({ params }: Props) {
           >
             Get in touch
           </Link>
+          </div>
         </div>
       </div>
     </section>

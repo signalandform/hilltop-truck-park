@@ -11,7 +11,6 @@ const navLinks = [
   { href: "/market-sign-ups", label: "Market Sign Ups" },
   { href: "/our-food-trucks", label: "Our Food Trucks" },
   { href: "/online-store", label: "Online Store" },
-  { href: "/crawfish-pre-orders", label: "Crawfish Pre-orders" },
   { href: "/photo-fun", label: "Photo Fun!" },
   { href: "/vendor-requests", label: "Vendor Requests" },
   { href: "/contact-us", label: "Contact" },

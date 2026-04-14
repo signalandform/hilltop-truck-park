@@ -65,7 +65,7 @@ export default function MarketSignUpsPage() {
             <li>• Farmers markets (seasonal)</li>
             <li>• Twilight markets</li>
             <li>• Live music</li>
-            <li>• Crawfish pre-orders — see <Link href="/crawfish-pre-orders" className="text-htp-red hover:underline font-medium">Crawfish Pre-Orders</Link></li>
+            <li>• Crawfish boils (seasonal)</li>
             <li>• Foam parties (summer)</li>
             <li>• Themed events (Vegas Night, Galentine&apos;s, Halloween, etc.)</li>
           </ul>

@@ -38,17 +38,16 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const { error: authError } =
-      mode === "signup"
-        ? await supabase.auth.signUp({ email, password })
-        : await supabase.auth.signInWithPassword({ email, password });
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (authError) setError(authError.message);
     setLoading(false);
@@ -64,7 +63,7 @@ function LoginForm() {
           HTP Admin
         </h1>
         <p className="text-slate-500 text-sm text-center mb-6">
-          {mode === "signin" ? "Sign in to manage your site" : "Create your admin account"}
+          Sign in to manage your site
         </p>
 
         {error && (
@@ -99,17 +98,32 @@ function LoginForm() {
           disabled={loading}
           className="w-full bg-slate-800 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 transition-colors"
         >
-          {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); }}
-          className="w-full text-sm text-slate-500 hover:text-slate-700 mt-3 transition-colors"
-        >
-          {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+          {loading ? "Please wait..." : "Sign In"}
         </button>
       </form>
+    </div>
+  );
+}
+
+function NotAuthorized({ email, onLogout }: { email: string; onLogout: () => void }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center">
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h1>
+        <p className="text-slate-500 text-sm mb-1">
+          <span className="font-medium text-slate-700">{email}</span> is not
+          authorized to manage this site.
+        </p>
+        <p className="text-slate-400 text-xs mb-6">
+          Contact your administrator to request access.
+        </p>
+        <button
+          onClick={onLogout}
+          className="bg-slate-800 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:bg-slate-700 transition-colors"
+        >
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 }
@@ -117,6 +131,7 @@ function LoginForm() {
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isCmsAdmin, setIsCmsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -128,10 +143,24 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
+      if (!s) setIsCmsAdmin(null);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!session) return;
+
+    supabase
+      .from("cms_admins")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setIsCmsAdmin(!!data);
+      });
+  }, [session]);
 
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -146,6 +175,23 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   if (!session) return <LoginForm />;
+
+  if (isCmsAdmin === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <div className="text-slate-500 text-sm">Checking access...</div>
+      </div>
+    );
+  }
+
+  if (!isCmsAdmin) {
+    return (
+      <NotAuthorized
+        email={session.user.email ?? "Unknown"}
+        onLogout={handleLogout}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-slate-100">

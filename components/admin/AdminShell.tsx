@@ -156,11 +156,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
     supabase
       .from("cms_admins")
-      .select("user_id")
+      .select("user_id, sites")
       .eq("user_id", session.user.id)
       .maybeSingle()
       .then(({ data }) => {
-        setIsCmsAdmin(!!data);
+        if (!data) { setIsCmsAdmin(false); return; }
+        const sites: string[] = data.sites ?? [];
+        setIsCmsAdmin(sites.includes("hilltop") || sites.includes("all"));
       });
   }, [session]);
 

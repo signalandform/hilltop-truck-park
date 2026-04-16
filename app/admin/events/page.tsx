@@ -15,7 +15,7 @@ export default function AdminEventsList() {
     supabase
       .from("cms_events")
       .select("*")
-      .order("sort_order", { ascending: true })
+      .order("event_date", { ascending: true, nullsFirst: false })
       .then(({ data }) => {
         setEvents(data ?? []);
         setLoading(false);
@@ -23,9 +23,14 @@ export default function AdminEventsList() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this event?")) return;
+    if (!confirm("Delete this event? This also deletes all sign-ups.")) return;
     await supabase.from("cms_events").delete().eq("id", id);
     setEvents((prev) => prev.filter((e) => e.id !== id));
+  };
+
+  const formatDate = (d: string | null) => {
+    if (!d) return "—";
+    return new Date(d + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
   return (
@@ -52,44 +57,61 @@ export default function AdminEventsList() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
+                <th className="text-left px-4 py-3 font-medium text-slate-600">Date</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Title</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-600">Date Label</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-600">Order</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-600">Location</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-600">Sign-ups</th>
                 <th className="text-center px-4 py-3 font-medium text-slate-600">Status</th>
                 <th className="text-right px-4 py-3 font-medium text-slate-600">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {events.map((event) => (
-                <tr
-                  key={event.id}
-                  className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer"
-                  onClick={() => router.push(`/admin/events/${event.id}`)}
-                >
-                  <td className="px-4 py-3 font-medium text-slate-900">{event.title}</td>
-                  <td className="px-4 py-3 text-slate-500">{event.date_label}</td>
-                  <td className="px-4 py-3 text-center text-slate-500">{event.sort_order}</td>
-                  <td className="px-4 py-3 text-center">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        event.is_published
-                          ? "bg-green-100 text-green-700"
-                          : "bg-amber-100 text-amber-700"
-                      }`}
-                    >
-                      {event.is_published ? "Published" : "Draft"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(event.id); }}
-                      className="text-red-500 hover:text-red-700 text-xs font-medium"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {events.map((event) => {
+                const isPast = event.event_date && new Date(event.event_date + "T00:00:00") < new Date(new Date().toDateString());
+                return (
+                  <tr
+                    key={event.id}
+                    className={`border-b border-slate-100 hover:bg-slate-50 cursor-pointer ${isPast ? "opacity-50" : ""}`}
+                    onClick={() => router.push(`/admin/events/${event.id}`)}
+                  >
+                    <td className="px-4 py-3 text-slate-700 whitespace-nowrap">{formatDate(event.event_date)}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900">{event.title}</td>
+                    <td className="px-4 py-3 text-slate-500">{event.location ?? "—"}</td>
+                    <td className="px-4 py-3 text-center">
+                      {event.signup_enabled ? (
+                        <Link
+                          href={`/admin/events/${event.id}/signups`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-blue-600 hover:underline text-xs font-medium"
+                        >
+                          View
+                        </Link>
+                      ) : (
+                        <span className="text-slate-400 text-xs">Off</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+                          event.is_published
+                            ? "bg-green-100 text-green-700"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {event.is_published ? "Published" : "Draft"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDelete(event.id); }}
+                        className="text-red-500 hover:text-red-700 text-xs font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

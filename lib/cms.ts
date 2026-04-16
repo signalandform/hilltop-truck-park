@@ -24,6 +24,9 @@ export type CmsEvent = {
   title: string;
   description: string;
   date_label: string;
+  event_date: string | null;
+  location: string | null;
+  signup_enabled: boolean;
   image_url: string | null;
   is_published: boolean;
   sort_order: number;
@@ -103,7 +106,33 @@ export async function getEvents(): Promise<CmsEvent[]> {
     .from("cms_events")
     .select("*")
     .eq("is_published", true)
-    .order("sort_order", { ascending: true });
+    .order("event_date", { ascending: true, nullsFirst: false });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getUpcomingEvents(): Promise<CmsEvent[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("is_published", true)
+    .gte("event_date", today)
+    .order("event_date", { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getPastEvents(): Promise<CmsEvent[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("is_published", true)
+    .lt("event_date", today)
+    .order("event_date", { ascending: false });
 
   if (error) throw error;
   return data ?? [];

@@ -54,6 +54,18 @@ export type PageContent<T = Record<string, unknown>> = {
   updated_at: string;
 };
 
+export type GalleryPhoto = {
+  id: string;
+  image_url: string;
+  caption: string | null;
+  alt_text: string | null;
+  is_published: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 // ---------------------------------------------------------------------------
 // ISR revalidation interval (seconds)
 // ---------------------------------------------------------------------------
@@ -192,6 +204,22 @@ export async function getPageContent<T = Record<string, unknown>>(
 
   if (error) throw error;
   return (data?.content as T) ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Gallery Photos (Photo Fun page)
+// ---------------------------------------------------------------------------
+
+export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
+  const { data, error } = await supabase
+    .from("cms_gallery_photos")
+    .select("*")
+    .eq("is_published", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function getPageSections(

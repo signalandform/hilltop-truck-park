@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/admin/blog", label: "Blog Posts", icon: "✎" },
   { href: "/admin/events", label: "Events", icon: "★" },
   { href: "/admin/trucks", label: "Food Trucks", icon: "◉" },
+  { href: "/admin/photos", label: "Photo Gallery", icon: "▤" },
   { href: "/admin/pages", label: "Page Content", icon: "☰" },
   { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
   { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },

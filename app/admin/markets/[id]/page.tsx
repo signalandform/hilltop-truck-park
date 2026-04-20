@@ -56,7 +56,7 @@ type TicketDraft = {
 
 const EMPTY_DRAFT: TicketDraft = { name: "", description: "", price: "50", capacity: "" };
 
-export default function EventEditor() {
+export default function MarketEditor() {
   const { id } = useParams<{ id: string }>();
   const isNew = id === "new";
   const router = useRouter();
@@ -77,14 +77,14 @@ export default function EventEditor() {
   const loadTicketTypes = useCallback(async () => {
     const [typesRes, countsRes] = await Promise.all([
       supabase
-        .from("cms_event_ticket_types")
+        .from("cms_market_ticket_types")
         .select("*")
-        .eq("event_id", id)
+        .eq("market_id", id)
         .order("sort_order", { ascending: true }),
       supabase
-        .from("cms_event_signups")
+        .from("cms_market_signups")
         .select("ticket_type_id")
-        .eq("event_id", id)
+        .eq("market_id", id)
         .not("ticket_type_id", "is", null),
     ]);
 
@@ -111,12 +111,12 @@ export default function EventEditor() {
   useEffect(() => {
     if (isNew) return;
     supabase
-      .from("cms_events")
+      .from("cms_markets")
       .select("*")
       .eq("id", id)
       .single()
       .then(({ data, error: err }) => {
-        if (err || !data) { router.replace("/admin/events"); return; }
+        if (err || !data) { router.replace("/admin/markets"); return; }
         setForm({
           title: data.title,
           slug: data.slug,
@@ -134,9 +134,9 @@ export default function EventEditor() {
       });
 
     supabase
-      .from("cms_event_signups")
+      .from("cms_market_signups")
       .select("id", { count: "exact", head: true })
-      .eq("event_id", id)
+      .eq("market_id", id)
       .then(({ count }) => setSignupCount(count ?? 0));
 
     loadTicketTypes();
@@ -173,21 +173,21 @@ export default function EventEditor() {
     };
 
     if (isNew) {
-      const { error: err } = await supabase.from("cms_events").insert(payload);
+      const { error: err } = await supabase.from("cms_markets").insert(payload);
       if (err) { setError(err.message); setSaving(false); return; }
     } else {
-      const { error: err } = await supabase.from("cms_events").update(payload).eq("id", id);
+      const { error: err } = await supabase.from("cms_markets").update(payload).eq("id", id);
       if (err) { setError(err.message); setSaving(false); return; }
     }
 
-    router.push("/admin/events");
+    router.push("/admin/markets");
   };
 
   const handleAddTicketType = async () => {
     if (!ticketDraft.name.trim()) return;
     setTicketSaving(true);
-    const { error: err } = await supabase.from("cms_event_ticket_types").insert({
-      event_id: id,
+    const { error: err } = await supabase.from("cms_market_ticket_types").insert({
+      market_id: id,
       name: ticketDraft.name.trim(),
       description: ticketDraft.description.trim() || null,
       price: parseFloat(ticketDraft.price) || 0,
@@ -204,7 +204,7 @@ export default function EventEditor() {
     if (!editDraft.name.trim()) return;
     setTicketSaving(true);
     const { error: err } = await supabase
-      .from("cms_event_ticket_types")
+      .from("cms_market_ticket_types")
       .update({
         name: editDraft.name.trim(),
         description: editDraft.description.trim() || null,
@@ -221,7 +221,7 @@ export default function EventEditor() {
 
   const handleToggleActive = async (typeId: string, active: boolean) => {
     await supabase
-      .from("cms_event_ticket_types")
+      .from("cms_market_ticket_types")
       .update({ is_active: active, updated_at: new Date().toISOString() })
       .eq("id", typeId);
     await loadTicketTypes();
@@ -232,7 +232,7 @@ export default function EventEditor() {
       ? `This ticket type has ${signups} sign-up(s). Deleting it will unlink those registrations. Continue?`
       : "Delete this ticket type?";
     if (!confirm(msg)) return;
-    await supabase.from("cms_event_ticket_types").delete().eq("id", typeId);
+    await supabase.from("cms_market_ticket_types").delete().eq("id", typeId);
     await loadTicketTypes();
   };
 
@@ -252,17 +252,17 @@ export default function EventEditor() {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href="/admin/events" className="text-sm text-slate-500 hover:text-slate-700">
-            ← Back to Events
+          <Link href="/admin/markets" className="text-sm text-slate-500 hover:text-slate-700">
+            ← Back to Markets
           </Link>
           <h1 className="text-2xl font-bold text-slate-900 mt-1">
-            {isNew ? "New Event" : "Edit Event"}
+            {isNew ? "New Market" : "Edit Market"}
           </h1>
         </div>
         <div className="flex items-center gap-3">
           {!isNew && signupCount > 0 && (
             <Link
-              href={`/admin/events/${id}/signups`}
+              href={`/admin/markets/${id}/signups`}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
               {signupCount} sign-up{signupCount !== 1 ? "s" : ""} →
@@ -311,7 +311,7 @@ export default function EventEditor() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Event Date</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Market Date</label>
             <input
               type="date"
               value={form.event_date}
@@ -343,7 +343,7 @@ export default function EventEditor() {
         <ImageUpload
           value={form.image_url}
           onChange={(url) => update("image_url", url)}
-          folder="events"
+          folder="markets"
         />
 
         <div>
@@ -384,12 +384,11 @@ export default function EventEditor() {
         </div>
       </div>
 
-      {/* Ticket Types Section */}
       {!isNew && (
         <div className="bg-white rounded-xl border border-slate-200 p-6 mt-6">
           <h2 className="text-lg font-bold text-slate-900 mb-4">Ticket Types</h2>
           <p className="text-xs text-slate-500 mb-4">
-            Define ticket categories for this event. Each type can have its own price and capacity limit.
+            Define ticket categories for this market. Each type can have its own price and capacity limit.
           </p>
 
           {ticketTypes.length > 0 && (
@@ -515,7 +514,6 @@ export default function EventEditor() {
             </div>
           )}
 
-          {/* Add new ticket type */}
           <div className="border border-dashed border-slate-300 rounded-lg p-4">
             <p className="text-xs font-medium text-slate-600 mb-3">Add Ticket Type</p>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">

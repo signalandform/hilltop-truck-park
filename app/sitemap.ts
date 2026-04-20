@@ -1,11 +1,11 @@
 import { MetadataRoute } from "next";
-import { getEventSlugs, getBlogSlugs } from "@/lib/cms";
+import { getMarketSlugs, getBlogSlugs } from "@/lib/cms";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://hilltoptruckpark.signalandform.net";
 
-  const [eventSlugs, blogSlugs] = await Promise.all([
-    getEventSlugs(),
+  const [marketSlugs, blogSlugs] = await Promise.all([
+    getMarketSlugs(),
     getBlogSlugs(),
   ]);
 
@@ -22,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/vendor-requests`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
-  const marketPages: MetadataRoute.Sitemap = eventSlugs.map((slug) => ({
+  const marketPages: MetadataRoute.Sitemap = marketSlugs.map((slug) => ({
     url: `${baseUrl}/markets/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly",

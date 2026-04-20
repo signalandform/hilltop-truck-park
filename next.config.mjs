@@ -14,6 +14,8 @@ const nextConfig = {
       { source: "/contact", destination: "/contact-us", permanent: true },
       { source: "/contact/", destination: "/contact-us", permanent: true },
       { source: "/events/:slug", destination: "/markets/:slug", permanent: true },
+      { source: "/admin/events", destination: "/admin/markets", permanent: false },
+      { source: "/admin/events/:path*", destination: "/admin/markets/:path*", permanent: false },
     ];
   },
 };

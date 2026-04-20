@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 
 type Counts = {
   blog: number;
-  events: number;
+  markets: number;
   trucks: number;
   pages: number;
   contacts: number;
@@ -15,7 +15,7 @@ type Counts = {
 
 const CONTENT_CARDS = [
   { key: "blog" as const, label: "Blog Posts", href: "/admin/blog", description: "Create and manage blog posts" },
-  { key: "events" as const, label: "Events", href: "/admin/events", description: "Manage upcoming events" },
+  { key: "markets" as const, label: "Markets", href: "/admin/markets", description: "Manage upcoming markets" },
   { key: "trucks" as const, label: "Food Trucks", href: "/admin/trucks", description: "Update the truck lineup" },
   { key: "pages" as const, label: "Page Content", href: "/admin/pages", description: "Edit site copy and sections" },
 ];
@@ -26,14 +26,14 @@ const INBOX_CARDS = [
 ];
 
 export default function AdminDashboard() {
-  const [counts, setCounts] = useState<Counts>({ blog: 0, events: 0, trucks: 0, pages: 0, contacts: 0, vendors: 0 });
+  const [counts, setCounts] = useState<Counts>({ blog: 0, markets: 0, trucks: 0, pages: 0, contacts: 0, vendors: 0 });
   const [unread, setUnread] = useState({ contacts: 0, vendors: 0 });
 
   useEffect(() => {
     async function load() {
-      const [b, e, t, p, c, v, cu, vu] = await Promise.all([
+      const [b, m, t, p, c, v, cu, vu] = await Promise.all([
         supabase.from("cms_blog_posts").select("id", { count: "exact", head: true }),
-        supabase.from("cms_events").select("id", { count: "exact", head: true }),
+        supabase.from("cms_markets").select("id", { count: "exact", head: true }),
         supabase.from("cms_food_trucks").select("id", { count: "exact", head: true }),
         supabase.from("cms_page_content").select("id", { count: "exact", head: true }),
         supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }),
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
       ]);
       setCounts({
         blog: b.count ?? 0,
-        events: e.count ?? 0,
+        markets: m.count ?? 0,
         trucks: t.count ?? 0,
         pages: p.count ?? 0,
         contacts: c.count ?? 0,

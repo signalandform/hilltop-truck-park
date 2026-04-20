@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getUpcomingEvents, getPastEvents, CMS_REVALIDATE } from "@/lib/cms";
+import { getUpcomingMarkets, getPastMarkets, CMS_REVALIDATE } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -23,8 +23,8 @@ function formatDate(dateStr: string | null) {
 
 export default async function MarketsPage() {
   const [upcoming, past] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents(),
+    getUpcomingMarkets(),
+    getPastMarkets(),
   ]);
 
   return (
@@ -44,17 +44,17 @@ export default async function MarketsPage() {
               Upcoming Markets
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {upcoming.map((event) => (
+              {upcoming.map((market) => (
                 <Link
-                  key={event.slug}
-                  href={`/markets/${event.slug}`}
+                  key={market.slug}
+                  href={`/markets/${market.slug}`}
                   className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden hover:border-htp-red/50 transition-colors block text-left"
                 >
-                  {event.image_url && (
+                  {market.image_url && (
                     <div className="relative w-full aspect-[16/9]">
                       <Image
-                        src={event.image_url}
-                        alt={event.title}
+                        src={market.image_url}
+                        alt={market.title}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 33vw"
@@ -62,22 +62,22 @@ export default async function MarketsPage() {
                     </div>
                   )}
                   <div className="p-6">
-                    {event.event_date && (
+                    {market.event_date && (
                       <p className="text-xs font-medium text-htp-red uppercase tracking-wider mb-2">
-                        {formatDate(event.event_date)}
+                        {formatDate(market.event_date)}
                       </p>
                     )}
                     <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-2">
-                      {event.title}
+                      {market.title}
                     </h3>
-                    {event.location && (
-                      <p className="text-sm text-htp-ink/60 mb-3">{event.location}</p>
+                    {market.location && (
+                      <p className="text-sm text-htp-ink/60 mb-3">{market.location}</p>
                     )}
                     <p className="text-htp-ink text-sm leading-[1.55] mb-4 line-clamp-2">
-                      {event.description}
+                      {market.description}
                     </p>
                     <span className="inline-block px-4 py-2 bg-htp-red text-white rounded-btn text-sm font-medium">
-                      {event.signup_enabled ? "Sign Up" : "Learn More"}
+                      {market.signup_enabled ? "Sign Up" : "Learn More"}
                     </span>
                   </div>
                 </Link>
@@ -99,19 +99,19 @@ export default async function MarketsPage() {
               Past Markets
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 opacity-70">
-              {past.map((event) => (
+              {past.map((market) => (
                 <Link
-                  key={event.slug}
-                  href={`/markets/${event.slug}`}
+                  key={market.slug}
+                  href={`/markets/${market.slug}`}
                   className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-4 hover:border-htp-line/80 transition-colors block text-left"
                 >
-                  {event.event_date && (
+                  {market.event_date && (
                     <p className="text-xs text-htp-ink/50 mb-1">
-                      {formatDate(event.event_date)}
+                      {formatDate(market.event_date)}
                     </p>
                   )}
                   <h3 className="font-display text-sm text-htp-navy uppercase tracking-[0.04em]">
-                    {event.title}
+                    {market.title}
                   </h3>
                 </Link>
               ))}

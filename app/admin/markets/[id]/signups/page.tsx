@@ -17,27 +17,27 @@ type Signup = {
 
 type TicketTypeMap = Record<string, string>;
 
-export default function EventSignupsPage() {
+export default function MarketSignupsPage() {
   const { id } = useParams<{ id: string }>();
   const [signups, setSignups] = useState<Signup[]>([]);
   const [ticketNames, setTicketNames] = useState<TicketTypeMap>({});
-  const [eventTitle, setEventTitle] = useState("");
+  const [marketTitle, setMarketTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
-      supabase.from("cms_events").select("title").eq("id", id).single(),
+      supabase.from("cms_markets").select("title").eq("id", id).single(),
       supabase
-        .from("cms_event_signups")
+        .from("cms_market_signups")
         .select("*")
-        .eq("event_id", id)
+        .eq("market_id", id)
         .order("created_at", { ascending: false }),
       supabase
-        .from("cms_event_ticket_types")
+        .from("cms_market_ticket_types")
         .select("id, name")
-        .eq("event_id", id),
-    ]).then(([eventRes, signupsRes, typesRes]) => {
-      setEventTitle(eventRes.data?.title ?? "Event");
+        .eq("market_id", id),
+    ]).then(([marketRes, signupsRes, typesRes]) => {
+      setMarketTitle(marketRes.data?.title ?? "Market");
       setSignups(signupsRes.data ?? []);
       const names: TicketTypeMap = {};
       for (const t of typesRes.data ?? []) {
@@ -50,18 +50,18 @@ export default function EventSignupsPage() {
 
   const handleDelete = async (signupId: string) => {
     if (!confirm("Remove this sign-up?")) return;
-    await supabase.from("cms_event_signups").delete().eq("id", signupId);
+    await supabase.from("cms_market_signups").delete().eq("id", signupId);
     setSignups((prev) => prev.filter((s) => s.id !== signupId));
   };
 
   return (
     <>
       <div className="mb-6">
-        <Link href={`/admin/events/${id}`} className="text-sm text-slate-500 hover:text-slate-700">
-          ← Back to Event
+        <Link href={`/admin/markets/${id}`} className="text-sm text-slate-500 hover:text-slate-700">
+          ← Back to Market
         </Link>
         <h1 className="text-2xl font-bold text-slate-900 mt-1">
-          Sign-ups: {eventTitle}
+          Sign-ups: {marketTitle}
         </h1>
         <p className="text-sm text-slate-500 mt-1">
           {signups.length} registration{signups.length !== 1 ? "s" : ""}

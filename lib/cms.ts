@@ -18,7 +18,7 @@ export type BlogPost = {
   updated_at: string;
 };
 
-export type CmsEvent = {
+export type CmsMarket = {
   id: string;
   slug: string;
   title: string;
@@ -46,9 +46,9 @@ export type FoodTruck = {
   updated_at: string;
 };
 
-export type CmsEventTicketType = {
+export type CmsMarketTicketType = {
   id: string;
-  event_id: string;
+  market_id: string;
   name: string;
   description: string | null;
   price: number;
@@ -123,12 +123,12 @@ export async function getBlogSlugs(): Promise<string[]> {
 }
 
 // ---------------------------------------------------------------------------
-// Events
+// Markets
 // ---------------------------------------------------------------------------
 
-export async function getEvents(): Promise<CmsEvent[]> {
+export async function getMarkets(): Promise<CmsMarket[]> {
   const { data, error } = await supabase
-    .from("cms_events")
+    .from("cms_markets")
     .select("*")
     .eq("is_published", true)
     .order("event_date", { ascending: true, nullsFirst: false });
@@ -137,10 +137,10 @@ export async function getEvents(): Promise<CmsEvent[]> {
   return data ?? [];
 }
 
-export async function getUpcomingEvents(): Promise<CmsEvent[]> {
+export async function getUpcomingMarkets(): Promise<CmsMarket[]> {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
-    .from("cms_events")
+    .from("cms_markets")
     .select("*")
     .eq("is_published", true)
     .gte("event_date", today)
@@ -150,10 +150,10 @@ export async function getUpcomingEvents(): Promise<CmsEvent[]> {
   return data ?? [];
 }
 
-export async function getPastEvents(): Promise<CmsEvent[]> {
+export async function getPastMarkets(): Promise<CmsMarket[]> {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
-    .from("cms_events")
+    .from("cms_markets")
     .select("*")
     .eq("is_published", true)
     .lt("event_date", today)
@@ -163,9 +163,9 @@ export async function getPastEvents(): Promise<CmsEvent[]> {
   return data ?? [];
 }
 
-export async function getEvent(slug: string): Promise<CmsEvent | null> {
+export async function getMarket(slug: string): Promise<CmsMarket | null> {
   const { data, error } = await supabase
-    .from("cms_events")
+    .from("cms_markets")
     .select("*")
     .eq("slug", slug)
     .eq("is_published", true)
@@ -175,9 +175,9 @@ export async function getEvent(slug: string): Promise<CmsEvent | null> {
   return data;
 }
 
-export async function getEventSlugs(): Promise<string[]> {
+export async function getMarketSlugs(): Promise<string[]> {
   const { data, error } = await supabase
-    .from("cms_events")
+    .from("cms_markets")
     .select("slug")
     .eq("is_published", true);
 
@@ -186,16 +186,16 @@ export async function getEventSlugs(): Promise<string[]> {
 }
 
 // ---------------------------------------------------------------------------
-// Event Ticket Types
+// Market Ticket Types
 // ---------------------------------------------------------------------------
 
-export async function getEventTicketTypes(
-  eventId: string,
-): Promise<CmsEventTicketType[]> {
+export async function getMarketTicketTypes(
+  marketId: string,
+): Promise<CmsMarketTicketType[]> {
   const { data, error } = await supabase
-    .from("cms_event_ticket_types")
+    .from("cms_market_ticket_types")
     .select("*")
-    .eq("event_id", eventId)
+    .eq("market_id", marketId)
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
@@ -204,12 +204,12 @@ export async function getEventTicketTypes(
 }
 
 export async function getTicketTypeSignupCounts(
-  eventId: string,
+  marketId: string,
 ): Promise<Record<string, number>> {
   const { data, error } = await supabase
-    .from("cms_event_signups")
+    .from("cms_market_signups")
     .select("ticket_type_id")
-    .eq("event_id", eventId)
+    .eq("market_id", marketId)
     .not("ticket_type_id", "is", null);
 
   if (error) throw error;
@@ -255,10 +255,6 @@ export async function getPageContent<T = Record<string, unknown>>(
   if (error) throw error;
   return (data?.content as T) ?? null;
 }
-
-// ---------------------------------------------------------------------------
-// Gallery Photos (Photo Fun page)
-// ---------------------------------------------------------------------------
 
 export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
   const { data, error } = await supabase

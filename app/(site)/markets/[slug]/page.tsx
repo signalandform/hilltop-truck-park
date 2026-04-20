@@ -3,13 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
-  getEvent,
-  getEventSlugs,
-  getEventTicketTypes,
+  getMarket,
+  getMarketSlugs,
+  getMarketTicketTypes,
   getTicketTypeSignupCounts,
   CMS_REVALIDATE,
 } from "@/lib/cms";
-import { EventSignupForm } from "@/components/EventSignupForm";
+import { MarketSignupForm } from "@/components/MarketSignupForm";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -18,17 +18,17 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const slugs = await getEventSlugs();
+  const slugs = await getMarketSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const event = await getEvent(slug);
-  if (!event) return { title: "Market | Hilltop Truck Park" };
+  const market = await getMarket(slug);
+  if (!market) return { title: "Market | Hilltop Truck Park" };
   return {
-    title: `${event.title} | Hilltop Truck Park`,
-    description: event.description,
+    title: `${market.title} | Hilltop Truck Park`,
+    description: market.description,
   };
 }
 
@@ -44,15 +44,15 @@ function formatDate(dateStr: string | null) {
 
 export default async function MarketDetailPage({ params }: Props) {
   const { slug } = await params;
-  const event = await getEvent(slug);
-  if (!event) notFound();
+  const market = await getMarket(slug);
+  if (!market) notFound();
 
-  const formattedDate = formatDate(event.event_date);
+  const formattedDate = formatDate(market.event_date);
 
-  const [ticketTypes, signupCounts] = event.signup_enabled
+  const [ticketTypes, signupCounts] = market.signup_enabled
     ? await Promise.all([
-        getEventTicketTypes(event.id),
-        getTicketTypeSignupCounts(event.id),
+        getMarketTicketTypes(market.id),
+        getTicketTypeSignupCounts(market.id),
       ])
     : [[], {}];
 
@@ -66,11 +66,11 @@ export default async function MarketDetailPage({ params }: Props) {
           ← Back to Markets
         </Link>
         <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden max-w-2xl mx-auto">
-          {event.image_url && (
+          {market.image_url && (
             <div className="relative w-full aspect-[16/9]">
               <Image
-                src={event.image_url}
-                alt={event.title}
+                src={market.image_url}
+                alt={market.title}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 672px"
@@ -84,14 +84,14 @@ export default async function MarketDetailPage({ params }: Props) {
               </p>
             )}
             <h1 className="font-display text-htp-h1 md:text-4xl text-htp-navy uppercase tracking-[0.04em] mb-4">
-              {event.title}
+              {market.title}
             </h1>
-            {event.location && (
-              <p className="text-htp-ink/60 mb-4">{event.location}</p>
+            {market.location && (
+              <p className="text-htp-ink/60 mb-4">{market.location}</p>
             )}
-            <p className="text-htp-ink leading-[1.55] mb-6">{event.description}</p>
+            <p className="text-htp-ink leading-[1.55] mb-6">{market.description}</p>
 
-            {!event.signup_enabled && (
+            {!market.signup_enabled && (
               <Link
                 href="/contact-us"
                 className="inline-block px-6 py-3 bg-htp-red text-white rounded-btn font-medium hover:bg-[#a32e28] transition-colors"
@@ -100,10 +100,10 @@ export default async function MarketDetailPage({ params }: Props) {
               </Link>
             )}
 
-            {event.signup_enabled && (
-              <EventSignupForm
-                eventId={event.id}
-                eventTitle={event.title}
+            {market.signup_enabled && (
+              <MarketSignupForm
+                marketId={market.id}
+                marketTitle={market.title}
                 ticketTypes={ticketTypes}
                 signupCounts={signupCounts}
               />

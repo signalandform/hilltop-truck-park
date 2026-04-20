@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import type { CmsEventTicketType } from "@/lib/cms";
+import type { CmsMarketTicketType } from "@/lib/cms";
 
 type Props = {
-  eventId: string;
-  eventTitle: string;
-  ticketTypes: CmsEventTicketType[];
+  marketId: string;
+  marketTitle: string;
+  ticketTypes: CmsMarketTicketType[];
   signupCounts: Record<string, number>;
 };
 
@@ -15,14 +15,14 @@ function formatPrice(price: number) {
   return price === 0 ? "Free" : `$${price.toFixed(2)}`;
 }
 
-function spotsRemaining(type: CmsEventTicketType, counts: Record<string, number>) {
+function spotsRemaining(type: CmsMarketTicketType, counts: Record<string, number>) {
   if (type.capacity === null) return null;
   return Math.max(0, type.capacity - (counts[type.id] ?? 0));
 }
 
-export function EventSignupForm({
-  eventId,
-  eventTitle,
+export function MarketSignupForm({
+  marketId,
+  marketTitle,
   ticketTypes,
   signupCounts: initialCounts,
 }: Props) {
@@ -51,8 +51,8 @@ export function EventSignupForm({
     setStatus("sending");
     setErrorMsg("");
 
-    const { error } = await supabase.from("cms_event_signups").insert({
-      event_id: eventId,
+    const { error } = await supabase.from("cms_market_signups").insert({
+      market_id: marketId,
       ticket_type_id: selectedTypeId,
       name: form.name.trim(),
       email: form.email.trim(),
@@ -84,7 +84,7 @@ export function EventSignupForm({
           You&apos;re Signed Up!
         </h3>
         <p className="text-sm">
-          Thanks for signing up for {eventTitle}
+          Thanks for signing up for {marketTitle}
           {selectedType ? ` (${selectedType.name})` : ""}. We&apos;ll see you there!
         </p>
         <button
@@ -104,7 +104,7 @@ export function EventSignupForm({
     return (
       <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-card p-6 mt-8">
         <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-2">
-          This Event is Sold Out
+          This Market is Sold Out
         </h3>
         <p className="text-sm">All ticket types are currently at capacity. Check back later or contact us for more info.</p>
       </div>
@@ -114,7 +114,7 @@ export function EventSignupForm({
   return (
     <div className="mt-8 border-t border-htp-line pt-8">
       <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-4 text-center">
-        {hasTicketTypes ? "Select a Ticket" : "Sign Up for This Event"}
+        {hasTicketTypes ? "Select a Ticket" : "Sign Up for This Market"}
       </h3>
 
       {errorMsg && (

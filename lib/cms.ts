@@ -46,6 +46,25 @@ export type FoodTruck = {
   updated_at: string;
 };
 
+export type CmsEvent = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  event_date: string | null;
+  date_label: string;
+  location: string | null;
+  price: string | null;
+  tag: string | null;
+  image_url: string | null;
+  cta_label: string;
+  cta_href: string;
+  is_published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type CmsMarketTicketType = {
   id: string;
   market_id: string;
@@ -183,6 +202,49 @@ export async function getMarketSlugs(): Promise<string[]> {
 
   if (error) throw error;
   return (data ?? []).map((r) => r.slug);
+}
+
+// ---------------------------------------------------------------------------
+// Customer Events (ticketed events, classes, raffles — /events page)
+// ---------------------------------------------------------------------------
+
+export async function getEvents(): Promise<CmsEvent[]> {
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("is_published", true)
+    .order("event_date", { ascending: true, nullsFirst: false })
+    .order("sort_order", { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getUpcomingEvents(): Promise<CmsEvent[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("is_published", true)
+    .or(`event_date.gte.${today},event_date.is.null`)
+    .order("event_date", { ascending: true, nullsFirst: false })
+    .order("sort_order", { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getPastEvents(): Promise<CmsEvent[]> {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("is_published", true)
+    .lt("event_date", today)
+    .order("event_date", { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
 }
 
 // ---------------------------------------------------------------------------

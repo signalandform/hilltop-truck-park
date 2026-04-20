@@ -26,10 +26,14 @@ export default async function OurFoodTrucksPage() {
           </p>
           <p>
             Our schedule changes regularly, so check our{" "}
+            <Link href="/markets" className="text-htp-red hover:underline font-medium">
+              Markets
+            </Link>{" "}
+            page for upcoming farmers markets, or our{" "}
             <Link href="/events" className="text-htp-red hover:underline font-medium">
               Events
             </Link>{" "}
-            page for the latest lineup, farmers markets, and special events.
+            page for paint classes, raffles, and more.
           </p>
         </div>
 

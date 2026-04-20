@@ -12,6 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/events`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/markets`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/contact-us`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/our-food-trucks`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
@@ -21,8 +22,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/vendor-requests`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
-  const eventPages: MetadataRoute.Sitemap = eventSlugs.map((slug) => ({
-    url: `${baseUrl}/events/${slug}`,
+  const marketPages: MetadataRoute.Sitemap = eventSlugs.map((slug) => ({
+    url: `${baseUrl}/markets/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.8,
@@ -35,5 +36,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...eventPages, ...blogPages];
+  return [...staticPages, ...marketPages, ...blogPages];
 }

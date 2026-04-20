@@ -37,14 +37,16 @@ export default function AdminEventsList() {
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Events</h1>
-          <p className="text-sm text-slate-500 mt-1">{events.length} event{events.length !== 1 ? "s" : ""}</p>
+          <h1 className="text-2xl font-bold text-slate-900">Markets</h1>
+          <p className="text-sm text-slate-500 mt-1">
+            {events.length} market{events.length !== 1 ? "s" : ""} — manages <code className="text-xs bg-slate-100 px-1 py-0.5 rounded">/markets</code> sign-ups
+          </p>
         </div>
         <Link
           href="/admin/events/new"
           className="bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
         >
-          + New Event
+          + New Market
         </Link>
       </div>
 

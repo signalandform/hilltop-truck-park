@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getEvent, getEventSlugs, CMS_REVALIDATE } from "@/lib/cms";
+import {
+  getEvent,
+  getEventSlugs,
+  getEventTicketTypes,
+  getTicketTypeSignupCounts,
+  CMS_REVALIDATE,
+} from "@/lib/cms";
 import { EventSignupForm } from "@/components/EventSignupForm";
 
 export const revalidate = CMS_REVALIDATE;
@@ -19,7 +25,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEvent(slug);
-  if (!event) return { title: "Event | Hilltop Truck Park" };
+  if (!event) return { title: "Market | Hilltop Truck Park" };
   return {
     title: `${event.title} | Hilltop Truck Park`,
     description: event.description,
@@ -36,21 +42,28 @@ function formatDate(dateStr: string | null) {
   });
 }
 
-export default async function EventDetailPage({ params }: Props) {
+export default async function MarketDetailPage({ params }: Props) {
   const { slug } = await params;
   const event = await getEvent(slug);
   if (!event) notFound();
 
   const formattedDate = formatDate(event.event_date);
 
+  const [ticketTypes, signupCounts] = event.signup_enabled
+    ? await Promise.all([
+        getEventTicketTypes(event.id),
+        getTicketTypeSignupCounts(event.id),
+      ])
+    : [[], {}];
+
   return (
     <section className="py-24 px-4">
       <div className="max-w-content mx-auto text-center">
         <Link
-          href="/events"
+          href="/markets"
           className="text-htp-red hover:underline text-sm mb-8 inline-block font-medium"
         >
-          ← Back to Events
+          ← Back to Markets
         </Link>
         <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden max-w-2xl mx-auto">
           {event.image_url && (
@@ -88,7 +101,12 @@ export default async function EventDetailPage({ params }: Props) {
             )}
 
             {event.signup_enabled && (
-              <EventSignupForm eventId={event.id} eventTitle={event.title} />
+              <EventSignupForm
+                eventId={event.id}
+                eventTitle={event.title}
+                ticketTypes={ticketTypes}
+                signupCounts={signupCounts}
+              />
             )}
           </div>
         </div>

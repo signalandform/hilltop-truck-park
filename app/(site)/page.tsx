@@ -80,6 +80,12 @@ export default async function HomePage() {
               See what&apos;s on this week
             </Link>
             <Link
+              href="/markets"
+              className="px-8 py-3 border-2 border-htp-navy text-htp-navy rounded-btn font-medium hover:bg-htp-navy/10 transition-colors"
+            >
+              Market Sign-Ups
+            </Link>
+            <Link
               href="/our-food-trucks"
               className="px-8 py-3 border-2 border-htp-navy text-htp-navy rounded-btn font-medium hover:bg-htp-navy/10 transition-colors"
             >

@@ -11,12 +11,16 @@ type Signup = {
   email: string;
   phone: string | null;
   message: string | null;
+  ticket_type_id: string | null;
   created_at: string;
 };
+
+type TicketTypeMap = Record<string, string>;
 
 export default function EventSignupsPage() {
   const { id } = useParams<{ id: string }>();
   const [signups, setSignups] = useState<Signup[]>([]);
+  const [ticketNames, setTicketNames] = useState<TicketTypeMap>({});
   const [eventTitle, setEventTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -28,9 +32,18 @@ export default function EventSignupsPage() {
         .select("*")
         .eq("event_id", id)
         .order("created_at", { ascending: false }),
-    ]).then(([eventRes, signupsRes]) => {
+      supabase
+        .from("cms_event_ticket_types")
+        .select("id, name")
+        .eq("event_id", id),
+    ]).then(([eventRes, signupsRes, typesRes]) => {
       setEventTitle(eventRes.data?.title ?? "Event");
       setSignups(signupsRes.data ?? []);
+      const names: TicketTypeMap = {};
+      for (const t of typesRes.data ?? []) {
+        names[t.id] = t.name;
+      }
+      setTicketNames(names);
       setLoading(false);
     });
   }, [id]);
@@ -66,6 +79,7 @@ export default function EventSignupsPage() {
               <tr className="border-b border-slate-200 bg-slate-50">
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Name</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Email</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-600">Ticket Type</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Phone</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Message</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Date</th>
@@ -78,6 +92,9 @@ export default function EventSignupsPage() {
                   <td className="px-4 py-3 font-medium text-slate-900">{s.name}</td>
                   <td className="px-4 py-3">
                     <a href={`mailto:${s.email}`} className="text-blue-600 hover:underline">{s.email}</a>
+                  </td>
+                  <td className="px-4 py-3 text-slate-500">
+                    {s.ticket_type_id ? (ticketNames[s.ticket_type_id] ?? "Unknown") : "—"}
                   </td>
                   <td className="px-4 py-3 text-slate-500">{s.phone ?? "—"}</td>
                   <td className="px-4 py-3 text-slate-500 max-w-xs truncate">{s.message ?? "—"}</td>

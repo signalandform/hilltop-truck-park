@@ -46,6 +46,19 @@ export type FoodTruck = {
   updated_at: string;
 };
 
+export type CmsEventTicketType = {
+  id: string;
+  event_id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  capacity: number | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type PageContent<T = Record<string, unknown>> = {
   id: string;
   page_slug: string;
@@ -170,6 +183,43 @@ export async function getEventSlugs(): Promise<string[]> {
 
   if (error) throw error;
   return (data ?? []).map((r) => r.slug);
+}
+
+// ---------------------------------------------------------------------------
+// Event Ticket Types
+// ---------------------------------------------------------------------------
+
+export async function getEventTicketTypes(
+  eventId: string,
+): Promise<CmsEventTicketType[]> {
+  const { data, error } = await supabase
+    .from("cms_event_ticket_types")
+    .select("*")
+    .eq("event_id", eventId)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getTicketTypeSignupCounts(
+  eventId: string,
+): Promise<Record<string, number>> {
+  const { data, error } = await supabase
+    .from("cms_event_signups")
+    .select("ticket_type_id")
+    .eq("event_id", eventId)
+    .not("ticket_type_id", "is", null);
+
+  if (error) throw error;
+
+  const counts: Record<string, number> = {};
+  for (const row of data ?? []) {
+    const tid = row.ticket_type_id as string;
+    counts[tid] = (counts[tid] ?? 0) + 1;
+  }
+  return counts;
 }
 
 // ---------------------------------------------------------------------------

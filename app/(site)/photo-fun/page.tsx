@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { CMS_REVALIDATE, getGalleryPhotos } from "@/lib/cms";
 
 export const metadata: Metadata = {
@@ -49,25 +50,43 @@ export default async function PhotoFunPage() {
           </p>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
-            {photos.map((photo, i) => (
-              <figure
-                key={photo.id}
-                className="mb-4 break-inside-avoid rounded-card overflow-hidden bg-htp-cream border border-htp-line shadow-sm"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo.image_url}
-                  alt={photo.alt_text ?? `Hilltop Truck Park photo ${i + 1}`}
-                  loading="lazy"
-                  className="w-full h-auto block"
-                />
-                {photo.caption && (
-                  <figcaption className="text-htp-ink text-sm px-3 py-2 text-left">
-                    {photo.caption}
-                  </figcaption>
-                )}
-              </figure>
-            ))}
+            {photos.map((photo, i) => {
+              const alt = photo.alt_text ?? `Hilltop Truck Park photo ${i + 1}`;
+              const hasDims = photo.width && photo.height;
+              const isPriority = i < 4;
+              return (
+                <figure
+                  key={photo.id}
+                  className="mb-4 break-inside-avoid rounded-card overflow-hidden bg-htp-cream border border-htp-line shadow-sm"
+                >
+                  {hasDims ? (
+                    <Image
+                      src={photo.image_url}
+                      alt={alt}
+                      width={photo.width!}
+                      height={photo.height!}
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      priority={isPriority}
+                      className="w-full h-auto block"
+                    />
+                  ) : (
+                    // Fallback for legacy photos without stored dimensions.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={photo.image_url}
+                      alt={alt}
+                      loading="lazy"
+                      className="w-full h-auto block"
+                    />
+                  )}
+                  {photo.caption && (
+                    <figcaption className="text-htp-ink text-sm px-3 py-2 text-left">
+                      {photo.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            })}
           </div>
         )}
       </div>

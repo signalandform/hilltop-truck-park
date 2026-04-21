@@ -20,6 +20,37 @@ function storagePathFromUrl(url: string): string | null {
   return url.slice(SUPABASE_PUBLIC_PREFIX.length);
 }
 
+function probeDimensionsFromFile(
+  file: File,
+): Promise<{ width: number; height: number } | null> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+    img.src = url;
+  });
+}
+
+function probeDimensionsFromUrl(
+  url: string,
+): Promise<{ width: number; height: number } | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () =>
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
 export default function AdminPhotosPage() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +81,24 @@ export default function AdminPhotosPage() {
 
   const publishedCount = photos.filter((p) => p.is_published).length;
   const featuredCount = photos.filter((p) => p.is_featured).length;
+  const missingDimsCount = photos.filter((p) => !p.width || !p.height).length;
+  const [backfilling, setBackfilling] = useState(false);
+
+  const backfillDimensions = async () => {
+    const targets = photos.filter((p) => !p.width || !p.height);
+    if (targets.length === 0) return;
+    setBackfilling(true);
+    for (const photo of targets) {
+      const dims = await probeDimensionsFromUrl(photo.image_url);
+      if (!dims) continue;
+      await supabase
+        .from("cms_gallery_photos")
+        .update({ width: dims.width, height: dims.height })
+        .eq("id", photo.id);
+    }
+    setBackfilling(false);
+    await loadPhotos();
+  };
 
   const handleFilesSelected = (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -130,10 +179,13 @@ export default function AdminPhotosPage() {
       }
 
       const { data: pub } = supabase.storage.from("cms-images").getPublicUrl(path);
+      const dims = await probeDimensionsFromFile(item.file);
       const { error: insertErr } = await supabase.from("cms_gallery_photos").insert({
         image_url: pub.publicUrl,
         sort_order: nextSort,
         is_published: true,
+        width: dims?.width ?? null,
+        height: dims?.height ?? null,
       });
       nextSort += 10;
 
@@ -266,14 +318,29 @@ export default function AdminPhotosPage() {
             published · {featuredCount} featured
           </p>
         </div>
-        <a
-          href="/photo-fun"
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm text-slate-600 hover:text-slate-900 underline underline-offset-2"
-        >
-          View public page ↗
-        </a>
+        <div className="flex items-center gap-4">
+          {missingDimsCount > 0 && (
+            <button
+              type="button"
+              onClick={backfillDimensions}
+              disabled={backfilling}
+              className="text-sm bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-lg hover:bg-amber-100 disabled:opacity-50"
+              title="Reads width/height of legacy photos so the public page doesn't jitter"
+            >
+              {backfilling
+                ? "Backfilling..."
+                : `Backfill dimensions (${missingDimsCount})`}
+            </button>
+          )}
+          <a
+            href="/photo-fun"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-slate-600 hover:text-slate-900 underline underline-offset-2"
+          >
+            View public page ↗
+          </a>
+        </div>
       </div>
 
       {/* Upload panel */}

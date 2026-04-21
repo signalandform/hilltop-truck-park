@@ -94,6 +94,8 @@ export type GalleryPhoto = {
   is_published: boolean;
   is_featured: boolean;
   sort_order: number;
+  width: number | null;
+  height: number | null;
   created_at: string;
   updated_at: string;
 };

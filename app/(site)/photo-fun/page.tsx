@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { CMS_REVALIDATE, getGalleryPhotos } from "@/lib/cms";
 
 export const metadata: Metadata = {
@@ -49,27 +48,25 @@ export default async function PhotoFunPage() {
             Photos coming soon — check back later!
           </p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 auto-rows-[120px]">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
             {photos.map((photo, i) => (
-              <div
+              <figure
                 key={photo.id}
-                className={`relative rounded-card overflow-hidden bg-htp-cream ${
-                  photo.is_featured ? "col-span-2 row-span-2" : ""
-                }`}
+                className="mb-4 break-inside-avoid rounded-card overflow-hidden bg-htp-cream border border-htp-line shadow-sm"
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={photo.image_url}
                   alt={photo.alt_text ?? `Hilltop Truck Park photo ${i + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                  loading="lazy"
+                  className="w-full h-auto block"
                 />
                 {photo.caption && (
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent text-white text-xs px-2 py-2 text-left">
+                  <figcaption className="text-htp-ink text-sm px-3 py-2 text-left">
                     {photo.caption}
-                  </div>
+                  </figcaption>
                 )}
-              </div>
+              </figure>
             ))}
           </div>
         )}

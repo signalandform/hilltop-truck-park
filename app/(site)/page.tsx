@@ -82,9 +82,9 @@ export default async function HomePage() {
                 <Image
                   src={hero?.logo_src ?? "/images/IMG_0935.png"}
                   alt="Hilltop Truck Park"
-                  width={220}
-                  height={88}
-                  className="h-20 w-auto max-w-full [filter:drop-shadow(0_2px_4px_rgb(0_0_0_/_0.6))] sm:h-24"
+                  width={320}
+                  height={128}
+                  className="h-28 w-auto max-w-full [filter:drop-shadow(0_2px_4px_rgb(0_0_0_/_0.6))] sm:h-32 md:h-36"
                 />
               </div>
               <h1 className="mb-4 font-display text-htp-h1 sm:mb-6 md:text-5xl lg:text-[3.5rem]">
@@ -97,17 +97,27 @@ export default async function HomePage() {
                 {hero?.description ??
                   "Your local food truck court for great eats, events, and family fun in Northlake, TX."}
               </p>
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                <Link href="/events" className="htp-btn-primary">
+              <div
+                className="htp-hero-cta-grid"
+                role="group"
+                aria-label="Key links"
+              >
+                <Link href="/events" className="htp-btn-primary htp-hero-cta-primary">
                   See what&apos;s on this week
                 </Link>
-                <Link href="/markets" className="htp-btn-secondary">
+                <Link href="/markets" className="htp-btn-secondary htp-hero-cta-outline">
                   Market Sign-Ups
                 </Link>
-                <Link href="/our-food-trucks" className="htp-btn-secondary">
+                <Link
+                  href="/our-food-trucks"
+                  className="htp-btn-secondary htp-hero-cta-outline"
+                >
                   Our Food Trucks
                 </Link>
-                <Link href="/contact-us" className="htp-btn-secondary">
+                <Link
+                  href="/contact-us"
+                  className="htp-btn-secondary htp-hero-cta-outline"
+                >
                   Contact Us
                 </Link>
               </div>

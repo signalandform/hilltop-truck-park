@@ -85,6 +85,36 @@ body::before {
     border-color: color-mix(in srgb, white 75%, transparent);
   }
 
+  /* Hero: equal-size CTAs in a 2×2 grid (avoids ragged flex-wrap) */
+  .htp-hero-cta-grid {
+    @apply mx-auto grid w-full max-w-xl grid-cols-1 gap-2.5 sm:max-w-2xl sm:grid-cols-2 sm:gap-3;
+  }
+
+  .htp-hero-cta-grid .htp-btn-primary,
+  .htp-hero-cta-grid .htp-btn-secondary {
+    @apply w-full min-h-[2.8rem] justify-center text-center text-sm sm:min-h-[2.9rem] sm:text-[0.9375rem] md:text-base;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Same 2px border box as outlines so the red CTA doesn’t “float” a different size */
+  .htp-hero-cta-primary {
+    @apply border-2 border-htp-red;
+  }
+
+  /* One shared “ghost” style for the three secondary actions (override .htp-hero .htp-btn-secondary) */
+  .htp-hero-cta-grid a.htp-hero-cta-outline {
+    @apply border-2 text-white;
+    background-color: color-mix(in srgb, white 6%, transparent);
+    border-color: color-mix(in srgb, white 55%, transparent);
+  }
+
+  .htp-hero-cta-grid a.htp-hero-cta-outline:hover {
+    background-color: color-mix(in srgb, white 20%, transparent);
+    color: var(--htp-navy);
+    border-color: white;
+  }
+
   /* Readability on busy hero photos: frosted column + text shadow backup */
   .htp-hero-panel {
     @apply rounded-2xl border px-5 py-7 shadow-2xl backdrop-blur-md sm:px-8 sm:py-9;

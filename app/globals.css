@@ -81,8 +81,22 @@ body::before {
   }
 
   .htp-hero .htp-btn-secondary {
-    @apply text-htp-cream hover:bg-htp-cream hover:text-htp-navy;
-    border-color: color-mix(in srgb, var(--htp-cream) 80%, transparent);
+    @apply text-white hover:bg-white hover:text-htp-navy;
+    border-color: color-mix(in srgb, white 75%, transparent);
+  }
+
+  /* Readability on busy hero photos: frosted column + text shadow backup */
+  .htp-hero-panel {
+    @apply rounded-2xl border px-5 py-7 shadow-2xl backdrop-blur-md sm:px-8 sm:py-9;
+    border-color: color-mix(in srgb, white 20%, transparent);
+    background-color: color-mix(in srgb, var(--htp-navy) 65%, transparent);
+  }
+
+  .htp-hero-prose h1,
+  .htp-hero-prose p {
+    text-shadow:
+      0 1px 2px rgb(0 0 0 / 0.5),
+      0 2px 24px rgb(0 0 0 / 0.35);
   }
 
   .htp-card {

@@ -58,52 +58,60 @@ export default async function HomePage() {
             className="object-cover object-[center_35%] sm:object-center"
             sizes="100vw"
           />
+          {/* Base dim — tames saturated mural art */}
+          <div className="absolute inset-0 bg-htp-navy/50" aria-hidden />
+          {/* Darker in the center where the copy sits */}
           <div
-            className="absolute inset-0 bg-gradient-to-b from-htp-navy/95 via-htp-navy/80 to-htp-navy/92"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_100%_88%_at_50%_40%,rgb(8_20_32_/_0.88),rgb(8_20_32_/_0.4)_55%,rgb(8_20_32_/_0.15)_100%)]"
             aria-hidden
           />
+          {/* Top/bottom: slightly darker for text + transition to next section */}
           <div
-            className="absolute inset-0 bg-gradient-to-t from-htp-bg/30 via-htp-navy/20 to-htp-navy/50"
+            className="absolute inset-0 bg-gradient-to-b from-htp-navy/30 via-transparent to-htp-navy/50"
             aria-hidden
           />
         </div>
 
-        <div className="htp-hero-anim max-w-4xl text-center text-htp-cream">
-          <p className="font-accent text-xl tracking-[0.14em] text-htp-cream/90 md:text-2xl">
-            Northlake, Texas
-          </p>
-          <div className="mb-6 mt-2 flex justify-center sm:mb-8">
-            <Image
-              src={hero?.logo_src ?? "/images/IMG_0935.png"}
-              alt="Hilltop Truck Park"
-              width={220}
-              height={88}
-              className="h-20 w-auto max-w-full drop-shadow-lg sm:h-24"
-            />
-          </div>
-          <h1 className="mb-4 font-display text-htp-h1 text-htp-cream sm:mb-6 md:text-5xl lg:text-[3.5rem]">
-            {hero?.heading ?? "Hilltop Truck Park"}
-          </h1>
-          <p className="mb-3 text-balance text-lg text-htp-cream/95 sm:mb-4 md:text-xl">
-            {hero?.tagline ?? "Eat. Sip. Hang out."}
-          </p>
-          <p className="mx-auto mb-10 max-w-xl text-balance text-base text-htp-cream/80">
-            {hero?.description ??
-              "Your local food truck court for great eats, events, and family fun in Northlake, TX."}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-            <Link href="/events" className="htp-btn-primary">
-              See what&apos;s on this week
-            </Link>
-            <Link href="/markets" className="htp-btn-secondary">
-              Market Sign-Ups
-            </Link>
-            <Link href="/our-food-trucks" className="htp-btn-secondary">
-              Our Food Trucks
-            </Link>
-            <Link href="/contact-us" className="htp-btn-secondary">
-              Contact Us
-            </Link>
+        <div className="mx-auto w-full max-w-3xl px-0 sm:max-w-4xl">
+          <div className="htp-hero-panel">
+            <div className="htp-hero-anim htp-hero-prose text-center text-white">
+              <p className="font-accent text-xl tracking-[0.14em] text-white/90 md:text-2xl">
+                Northlake, Texas
+              </p>
+              <div className="mb-6 mt-2 flex justify-center sm:mb-8">
+                <Image
+                  src={hero?.logo_src ?? "/images/IMG_0935.png"}
+                  alt="Hilltop Truck Park"
+                  width={220}
+                  height={88}
+                  className="h-20 w-auto max-w-full [filter:drop-shadow(0_2px_4px_rgb(0_0_0_/_0.6))] sm:h-24"
+                />
+              </div>
+              <h1 className="mb-4 font-display text-htp-h1 sm:mb-6 md:text-5xl lg:text-[3.5rem]">
+                {hero?.heading ?? "Hilltop Truck Park"}
+              </h1>
+              <p className="mb-3 text-balance text-lg text-white/95 sm:mb-4 md:text-xl">
+                {hero?.tagline ?? "Eat. Sip. Hang out."}
+              </p>
+              <p className="mx-auto mb-8 max-w-xl text-balance text-base text-white/85 sm:mb-9">
+                {hero?.description ??
+                  "Your local food truck court for great eats, events, and family fun in Northlake, TX."}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                <Link href="/events" className="htp-btn-primary">
+                  See what&apos;s on this week
+                </Link>
+                <Link href="/markets" className="htp-btn-secondary">
+                  Market Sign-Ups
+                </Link>
+                <Link href="/our-food-trucks" className="htp-btn-secondary">
+                  Our Food Trucks
+                </Link>
+                <Link href="/contact-us" className="htp-btn-secondary">
+                  Contact Us
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

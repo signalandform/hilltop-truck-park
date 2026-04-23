@@ -7,6 +7,7 @@ import {
   CMS_REVALIDATE,
   type CmsEvent,
 } from "@/lib/cms";
+import { Badge } from "@/components/ui/Badge";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean }) {
   return (
     <article
-      className={`bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden flex flex-col text-left ${
+      className={`htp-card overflow-hidden flex flex-col text-left ${
         past ? "opacity-75" : ""
       }`}
     >
@@ -41,11 +42,7 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
               {event.date_label}
             </p>
           )}
-          {event.tag && (
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-htp-navy bg-htp-navy/10 px-2 py-0.5 rounded-full">
-              {event.tag}
-            </span>
-          )}
+          {event.tag && <Badge>{event.tag}</Badge>}
         </div>
         <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-2">
           {event.title}
@@ -64,12 +61,12 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
             href={event.cta_href}
             target={event.cta_href.startsWith("http") ? "_blank" : undefined}
             rel={event.cta_href.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="inline-block self-start px-4 py-2 bg-htp-red text-white rounded-btn text-sm font-medium hover:bg-[#a32e28] transition-colors"
+            className="htp-btn-primary !px-4 !py-2 self-start !text-sm"
           >
             {event.cta_label || "Learn More"}
           </a>
         ) : (
-          <span className="inline-block self-start px-4 py-2 border border-htp-line text-htp-ink/60 rounded-btn text-sm font-medium">
+          <span className="inline-block self-start rounded-btn border border-htp-line px-4 py-2 text-sm font-medium text-htp-ink/60">
             {past ? "Past Event" : event.cta_label || "Learn More"}
           </span>
         )}
@@ -134,18 +131,15 @@ export default async function EventsPage() {
           </>
         )}
 
-        <div className="mt-20 bg-htp-cream border border-htp-line rounded-card p-8 max-w-2xl mx-auto">
-          <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-3">
+        <div className="htp-card-highlight mx-auto mt-20 max-w-2xl p-8">
+          <h2 className="font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy mb-3">
             Want to host something at Hilltop?
           </h2>
           <p className="text-htp-ink leading-[1.55] mb-4">
             Birthday parties, fundraisers, private events — we&apos;d love to hear what you&apos;re
             cooking up.
           </p>
-          <Link
-            href="/contact-us"
-            className="inline-block px-6 py-3 bg-htp-red text-white rounded-btn font-medium hover:bg-[#a32e28] transition-colors"
-          >
+          <Link href="/contact-us" className="htp-btn-primary inline-flex">
             Get in touch
           </Link>
         </div>

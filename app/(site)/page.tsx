@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/imageMap";
 import { getPageSections, CMS_REVALIDATE } from "@/lib/cms";
+import { SectionWave } from "@/components/decor/SectionWave";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -46,75 +47,91 @@ export default async function HomePage() {
   const foodTruckCta = sections.food_truck_cta as CtaSection | undefined;
 
   const heroImg = getImageUrl(
-    "https://static.wixstatic.com/media/51d5cc_dfd6534550a14e14af0cc44b5a2c7825~mv2.png"
+    "https://static.wixstatic.com/media/51d5cc_dfd6534550a14e14af0cc44b5a2c7825~mv2.png",
   );
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative min-h-[400px] flex items-center justify-center bg-htp-bg px-4 py-24">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8 flex justify-center">
+      {/* Hero — full-bleed photo, navy overlay, light text */}
+      <section className="htp-hero relative z-[1] flex min-h-[min(90vh,640px)] items-center justify-center overflow-hidden px-4 pb-32 pt-24 sm:pb-40 sm:pt-28">
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={heroImg}
+            alt="Hilltop Truck Park — food trucks and community"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-htp-navy/92 via-htp-navy/70 to-htp-navy/90"
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-htp-bg/25 via-transparent to-htp-navy/30"
+            aria-hidden
+          />
+        </div>
+
+        <div className="htp-hero-anim max-w-4xl text-center text-htp-cream">
+          <p className="font-accent text-xl tracking-[0.14em] text-htp-cream/90 md:text-2xl">
+            Northlake, Texas
+          </p>
+          <div className="mb-6 mt-2 flex justify-center sm:mb-8">
             <Image
               src={hero?.logo_src ?? "/images/IMG_0935.png"}
               alt="Hilltop Truck Park"
-              width={200}
-              height={80}
-              className="h-20 w-auto"
+              width={220}
+              height={88}
+              className="h-20 w-auto max-w-full drop-shadow-lg sm:h-24"
             />
           </div>
-          <h1 className="font-display text-htp-h1 md:text-5xl lg:text-[3.5rem] text-htp-navy uppercase tracking-[0.04em] mb-6">
+          <h1 className="mb-4 font-display text-htp-h1 text-htp-cream sm:mb-6 md:text-5xl lg:text-[3.5rem]">
             {hero?.heading ?? "Hilltop Truck Park"}
           </h1>
-          <p className="text-lg md:text-xl text-htp-ink/90 mb-8 leading-[1.55]">
+          <p className="mb-3 text-balance text-lg text-htp-cream/95 sm:mb-4 md:text-xl">
             {hero?.tagline ?? "Eat. Sip. Hang out."}
           </p>
-          <p className="text-base text-htp-ink/80 mb-10 max-w-xl mx-auto">
-            {hero?.description ?? "Your local food truck court for great eats, events, and family fun in Northlake, TX."}
+          <p className="mx-auto mb-10 max-w-xl text-balance text-base text-htp-cream/80">
+            {hero?.description ??
+              "Your local food truck court for great eats, events, and family fun in Northlake, TX."}
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/events"
-              className="px-8 py-3 bg-htp-red text-htp-bg rounded-btn font-medium hover:bg-[#a32e28] transition-colors"
-            >
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+            <Link href="/events" className="htp-btn-primary">
               See what&apos;s on this week
             </Link>
-            <Link
-              href="/markets"
-              className="px-8 py-3 border-2 border-htp-navy text-htp-navy rounded-btn font-medium hover:bg-htp-navy/10 transition-colors"
-            >
+            <Link href="/markets" className="htp-btn-secondary">
               Market Sign-Ups
             </Link>
-            <Link
-              href="/our-food-trucks"
-              className="px-8 py-3 border-2 border-htp-navy text-htp-navy rounded-btn font-medium hover:bg-htp-navy/10 transition-colors"
-            >
+            <Link href="/our-food-trucks" className="htp-btn-secondary">
               Our Food Trucks
             </Link>
-            <Link
-              href="/contact-us"
-              className="px-8 py-3 border-2 border-htp-navy text-htp-navy rounded-btn font-medium hover:bg-htp-navy/10 transition-colors"
-            >
+            <Link href="/contact-us" className="htp-btn-secondary">
               Contact Us
             </Link>
           </div>
         </div>
       </section>
 
+      <SectionWave
+        fill="htp-cream"
+        className="relative z-10 -mt-10 sm:-mt-14"
+      />
+
       {/* Hours */}
-      <section className="py-24 px-4 bg-htp-cream">
-        <div className="max-w-content mx-auto">
-          <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] text-center mb-12">
+      <section className="htp-surface-cream">
+        <div className="max-w-content mx-auto px-4 pb-24 pt-2">
+          <h2 className="htp-section-heading mb-10">
             {hoursData?.heading ?? "When We\u2019re Pourin\u2019"}
           </h2>
-          <div className="bg-htp-bg border border-htp-line rounded-card shadow-sm p-8 max-w-2xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-4 text-center">
+          <div className="htp-card max-w-2xl mx-auto p-8">
+            <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4 md:grid-cols-7">
               {(hoursData?.hours ?? []).map(({ day, time }) => (
                 <div key={day}>
-                  <p className="font-display text-htp-navy uppercase tracking-[0.04em] text-sm">
+                  <p className="font-display text-sm uppercase tracking-[0.04em] text-htp-navy">
                     {day}
                   </p>
-                  <p className="text-htp-ink text-sm mt-1">{time}</p>
+                  <p className="mt-1 text-sm text-htp-ink">{time}</p>
                 </div>
               ))}
             </div>
@@ -122,17 +139,21 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <SectionWave fill="htp-bg" className="relative z-10" />
+
       {/* Visit Us */}
-      <section className="py-24 px-4">
-        <div className="max-w-content mx-auto">
-          <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] text-center mb-12">
+      <section className="htp-surface">
+        <div className="max-w-content mx-auto px-4 pb-24 pt-2">
+          <h2 className="htp-section-heading mb-10">
             {visitUs?.heading ?? "Visit Us"}
           </h2>
-          <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-8 max-w-2xl mx-auto text-center">
-            <p className="text-lg text-htp-ink mb-2">{visitUs?.address ?? "8150 Thompson Rd, Northlake, TX 76247"}</p>
+          <div className="htp-card-highlight max-w-2xl mx-auto p-8 text-center">
+            <p className="text-lg text-htp-ink">
+              {visitUs?.address ?? "8150 Thompson Rd, Northlake, TX 76247"}
+            </p>
             <a
               href={`mailto:${visitUs?.email ?? "info@hilltoptruckpark.com"}`}
-              className="text-htp-red hover:underline text-lg font-medium"
+              className="mt-1 inline-block text-lg font-medium text-htp-red hover:underline"
             >
               {visitUs?.email ?? "info@hilltoptruckpark.com"}
             </a>
@@ -140,79 +161,88 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Values */}
       {values && (
-        <section className="py-24 px-4 bg-htp-cream">
-          <div className="max-w-content mx-auto">
-            <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] text-center mb-8">
-              {values.heading}
-            </h2>
-            <p className="text-htp-ink leading-[1.55] max-w-3xl mx-auto text-center">
-              {values.body}
-            </p>
-          </div>
-        </section>
+        <>
+          <SectionWave fill="htp-cream-2" className="relative z-10" />
+          <section className="htp-surface-cream-2">
+            <div className="max-w-content mx-auto px-4 pb-24 pt-2">
+              <h2 className="htp-section-heading mb-8">{values.heading}</h2>
+              <p className="mx-auto max-w-3xl text-center text-htp-ink leading-[1.55]">
+                {values.body}
+              </p>
+            </div>
+          </section>
+        </>
       )}
 
-      {/* Enjoy */}
       {enjoy && (
-        <section className="py-24 px-4">
-          <div className="max-w-content mx-auto">
-            <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] text-center mb-8">
-              {enjoy.heading}
-            </h2>
-            <p className="text-htp-ink leading-[1.55] max-w-3xl mx-auto text-center">
-              {enjoy.body}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Drink up */}
-      {drinkUp && (
-        <section className="py-24 px-4 bg-htp-cream">
-          <div className="max-w-content mx-auto">
-            <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] text-center mb-8">
-              {drinkUp.heading}
-            </h2>
-            <p className="text-htp-ink leading-[1.55] max-w-3xl mx-auto text-center">
-              {drinkUp.body}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Food Truck CTA */}
-      {foodTruckCta && (
-        <section className="py-24 px-4">
-          <div className="max-w-content mx-auto text-center">
-            <h2 className="font-display text-htp-h2 md:text-4xl text-htp-navy uppercase tracking-[0.04em] mb-6">
-              {foodTruckCta.heading}
-            </h2>
-            <Link
-              href={foodTruckCta.link_href}
-              className="inline-block px-8 py-3 bg-htp-red text-htp-bg rounded-btn font-medium hover:bg-[#a32e28] transition-colors"
-            >
-              {foodTruckCta.link_text}
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {/* Hero image */}
-      <section className="py-24 px-4 bg-htp-cream">
-        <div className="max-w-content mx-auto">
-          <div className="relative w-full aspect-[4/3] rounded-card overflow-hidden">
-            <Image
-              src={heroImg}
-              alt="Hilltop Truck Park"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 1200px"
+        <>
+          {values ? (
+            <SectionWave
+              fill="htp-bg"
+              className="relative z-10"
+              flip
             />
-          </div>
-        </div>
-      </section>
+          ) : (
+            <SectionWave fill="htp-cream" className="relative z-10" />
+          )}
+          <section
+            className={values ? "htp-surface" : "htp-surface-cream"}
+          >
+            <div className="max-w-content mx-auto px-4 pb-24 pt-2">
+              <h2 className="htp-section-heading mb-8">{enjoy.heading}</h2>
+              <p className="mx-auto max-w-3xl text-center text-htp-ink leading-[1.55]">
+                {enjoy.body}
+              </p>
+            </div>
+          </section>
+        </>
+      )}
+
+      {drinkUp && (
+        <>
+          <SectionWave
+            fill={(!enjoy && values) || (enjoy && !values) ? "htp-bg" : "htp-cream"}
+            className="relative z-10"
+            flip={Boolean(values && !enjoy)}
+          />
+          <section
+            className={
+              (!enjoy && values) || (enjoy && !values)
+                ? "htp-surface"
+                : "htp-surface-cream"
+            }
+          >
+            <div className="max-w-content mx-auto px-4 pb-24 pt-2">
+              <h2 className="htp-section-heading mb-8">{drinkUp.heading}</h2>
+              <p className="mx-auto max-w-3xl text-center text-htp-ink leading-[1.55]">
+                {drinkUp.body}
+              </p>
+            </div>
+          </section>
+        </>
+      )}
+
+      {foodTruckCta && (
+        <>
+          <SectionWave fill="htp-bg" className="relative z-10" />
+          <section className="htp-surface">
+            <div className="max-w-content mx-auto px-4 pb-24 pt-2 text-center">
+              <div className="htp-card-highlight mx-auto max-w-2xl p-8 sm:p-10">
+                <h2 className="htp-section-heading mb-4 sm:mb-6 !text-htp-h2">
+                  {foodTruckCta.heading}
+                </h2>
+                <Link
+                  href={foodTruckCta.link_href}
+                  className="htp-btn-primary inline-flex"
+                >
+                  {foodTruckCta.link_text}
+                </Link>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </>
   );
 }

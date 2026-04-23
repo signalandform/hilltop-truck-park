@@ -13,7 +13,7 @@ const navLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-htp-navy border-t border-htp-navy/80">
+    <footer className="relative z-[1] border-t-4 border-htp-red bg-htp-navy-footer text-htp-cream shadow-[0_-8px_32px_rgba(0,0,0,0.12)]">
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div>
@@ -26,7 +26,7 @@ export default function Footer() {
                 className="h-12 w-auto opacity-95"
               />
             </Link>
-            <p className="text-white/90 text-sm">
+            <p className="text-htp-cream/90 text-sm">
               8150 Thompson Rd, Northlake, TX 76247
               <br />
               <a href="mailto:info@hilltoptruckpark.com" className="text-htp-red hover:underline">
@@ -43,7 +43,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-white/90 hover:text-htp-red transition-colors"
+                className="text-sm text-htp-cream/90 transition-colors hover:text-htp-red"
               >
                 {link.label}
               </Link>

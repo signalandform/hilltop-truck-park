@@ -48,7 +48,7 @@ export default async function MarketsPage() {
                 <Link
                   key={market.slug}
                   href={`/markets/${market.slug}`}
-                  className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden hover:border-htp-red/50 transition-colors block text-left"
+                  className="htp-card block cursor-pointer overflow-hidden text-left transition-colors hover:border-htp-red/50"
                 >
                   {market.image_url && (
                     <div className="relative w-full aspect-[16/9]">
@@ -76,7 +76,7 @@ export default async function MarketsPage() {
                     <p className="text-htp-ink text-sm leading-[1.55] mb-4 line-clamp-2">
                       {market.description}
                     </p>
-                    <span className="inline-block px-4 py-2 bg-htp-red text-white rounded-btn text-sm font-medium">
+                    <span className="htp-btn-primary !pointer-events-none inline-flex !px-4 !py-2 !text-sm">
                       {market.signup_enabled ? "Sign Up" : "Learn More"}
                     </span>
                   </div>

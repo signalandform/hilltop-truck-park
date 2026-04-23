@@ -20,7 +20,11 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-htp-navy border-b border-htp-navy/80">
+    <header className="relative z-50 bg-htp-navy shadow-md">
+      <div
+        className="h-0.5 bg-gradient-to-r from-transparent via-htp-red/90 to-transparent"
+        aria-hidden
+      />
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center">
@@ -59,10 +63,8 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm transition-colors ${
-                    isActive
-                      ? "text-white border-b-2 border-htp-red pb-1"
-                      : "text-white hover:text-htp-red"
+                  className={`htp-nav-link text-sm text-white/95 pb-0.5 transition-colors hover:text-htp-red ${
+                    isActive ? "htp-nav-link-active" : ""
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >

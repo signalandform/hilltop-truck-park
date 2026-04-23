@@ -9,7 +9,7 @@ export default function SiteLayout({
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main className="relative z-[1] min-w-0">{children}</main>
       <Footer />
     </>
   );

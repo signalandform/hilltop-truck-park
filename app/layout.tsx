@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Oswald } from "next/font/google";
+import { Bebas_Neue, Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -12,6 +12,13 @@ const oswald = Oswald({
   subsets: ["latin"],
   weight: "700",
   variable: "--font-oswald",
+  display: "swap",
+});
+
+const bebas = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas",
   display: "swap",
 });
 
@@ -39,7 +46,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${oswald.variable} font-sans antialiased bg-htp-bg text-htp-ink`}>
+      <body
+        className={`${inter.variable} ${oswald.variable} ${bebas.variable} font-sans antialiased bg-htp-bg text-htp-ink`}
+      >
         {children}
       </body>
     </html>

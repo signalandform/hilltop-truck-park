@@ -227,7 +227,7 @@ export function MarketSignupForm({
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="px-8 py-3 bg-htp-red text-white rounded-btn font-medium hover:bg-[#a32e28] transition-colors disabled:opacity-50"
+                className="htp-btn-primary disabled:opacity-50"
               >
                 {status === "sending" ? "Signing Up..." : "Register"}
               </button>

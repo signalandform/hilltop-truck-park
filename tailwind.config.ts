@@ -14,6 +14,8 @@ const config: Config = {
         "htp-ink": "var(--htp-ink)",
         "htp-bg": "var(--htp-bg)",
         "htp-cream": "var(--htp-cream)",
+        "htp-cream-2": "var(--htp-cream-2)",
+        "htp-navy-footer": "var(--htp-navy-footer)",
         "htp-line": "var(--htp-line)",
         "htp-success": "var(--htp-success)",
         "htp-warning": "var(--htp-warning)",
@@ -22,6 +24,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-oswald)", "system-ui", "sans-serif"],
+        accent: ["var(--font-bebas)", "var(--font-oswald)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         btn: "var(--radius-btn)",
@@ -36,8 +39,11 @@ const config: Config = {
         "30": "7.5rem",
       },
       fontSize: {
-        "htp-h1": ["3rem", { lineHeight: "1.05" }],
-        "htp-h2": ["2.125rem", { lineHeight: "1.15" }],
+        "htp-h1": ["3rem", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
+        "htp-h2": [
+          "2.125rem",
+          { lineHeight: "1.2", letterSpacing: "0.01em" },
+        ],
         "htp-h3": ["1.5rem", { lineHeight: "1.2" }],
       },
     },

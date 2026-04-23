@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getImageUrl } from "@/lib/imageMap";
 import { getPageSections, CMS_REVALIDATE } from "@/lib/cms";
 import { SectionWave } from "@/components/decor/SectionWave";
 
@@ -46,29 +45,25 @@ export default async function HomePage() {
   const drinkUp = sections.drink_up as TextSection | undefined;
   const foodTruckCta = sections.food_truck_cta as CtaSection | undefined;
 
-  const heroImg = getImageUrl(
-    "https://static.wixstatic.com/media/51d5cc_dfd6534550a14e14af0cc44b5a2c7825~mv2.png",
-  );
-
   return (
     <>
       {/* Hero — full-bleed photo, navy overlay, light text */}
       <section className="htp-hero relative z-[1] flex min-h-[min(90vh,640px)] items-center justify-center overflow-hidden px-4 pb-32 pt-24 sm:pb-40 sm:pt-28">
         <div className="absolute inset-0 -z-10">
           <Image
-            src={heroImg}
-            alt="Hilltop Truck Park — food trucks and community"
+            src="/images/hilltop-mural-hero.png"
+            alt="Greetings from Hilltop — mural at Hilltop Truck Park"
             fill
             priority
-            className="object-cover object-center"
+            className="object-cover object-[center_35%] sm:object-center"
             sizes="100vw"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-b from-htp-navy/92 via-htp-navy/70 to-htp-navy/90"
+            className="absolute inset-0 bg-gradient-to-b from-htp-navy/95 via-htp-navy/80 to-htp-navy/92"
             aria-hidden
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-htp-bg/25 via-transparent to-htp-navy/30"
+            className="absolute inset-0 bg-gradient-to-t from-htp-bg/30 via-htp-navy/20 to-htp-navy/50"
             aria-hidden
           />
         </div>

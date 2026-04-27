@@ -182,11 +182,11 @@ export default async function HomePage() {
             </div>
           </div>
           {hasScheduleImages && (
-            <div className="mx-auto mt-16 max-w-5xl">
-              <div className="grid gap-8 md:grid-cols-2">
+            <div className="mx-auto mt-16 max-w-6xl">
+              <div className="grid gap-10">
                 {schedules.map((schedule) => (
-                  <section key={schedule.title} className="htp-card p-4 sm:p-5">
-                    <h3 className="mb-4 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
+                  <section key={schedule.title} className="htp-card p-5 sm:p-7">
+                    <h3 className="mb-5 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
                       {schedule.title}
                     </h3>
                     <Image
@@ -195,12 +195,12 @@ export default async function HomePage() {
                       width={1600}
                       height={900}
                       className="h-auto w-full rounded-[1.25rem] border border-htp-line"
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 768px) 100vw, 1152px"
                     />
                   </section>
                 ))}
                 {upcomingEventImages.length > 0 && (
-                  <section className="htp-card p-4 sm:p-5 md:col-span-2">
+                  <section className="htp-card p-4 sm:p-5">
                     <h3 className="mb-4 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
                       Upcoming Events
                     </h3>

@@ -189,15 +189,14 @@ export default async function HomePage() {
                     <h3 className="mb-4 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
                       {schedule.title}
                     </h3>
-                    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.25rem] border border-htp-line bg-white">
-                      <Image
-                        src={schedule.src}
-                        alt={schedule.alt}
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    </div>
+                    <Image
+                      src={schedule.src}
+                      alt={schedule.alt}
+                      width={1600}
+                      height={900}
+                      className="h-auto w-full rounded-[1.25rem] border border-htp-line"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
                   </section>
                 ))}
                 {upcomingEventImages.length > 0 && (
@@ -207,15 +206,13 @@ export default async function HomePage() {
                     </h3>
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {upcomingEventImages.map((src, index) => (
-                        <div
-                          key={`${src}-${index}`}
-                          className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.25rem] border border-htp-line bg-white"
-                        >
+                        <div key={`${src}-${index}`}>
                           <Image
                             src={src}
                             alt={`Upcoming event at Hilltop Truck Park ${index + 1}`}
-                            fill
-                            className="object-contain"
+                            width={900}
+                            height={1200}
+                            className="h-auto w-full rounded-[1.25rem] border border-htp-line"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                         </div>

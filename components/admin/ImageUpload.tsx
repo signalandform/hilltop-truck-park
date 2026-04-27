@@ -7,9 +7,17 @@ type Props = {
   value: string;
   onChange: (url: string) => void;
   folder?: string;
+  label?: string;
+  helpText?: string;
 };
 
-export function ImageUpload({ value, onChange, folder = "general" }: Props) {
+export function ImageUpload({
+  value,
+  onChange,
+  folder = "general",
+  label = "Image",
+  helpText,
+}: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +63,10 @@ export function ImageUpload({ value, onChange, folder = "general" }: Props) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">Image</label>
+      <label className="block text-sm font-medium text-slate-700 mb-1">
+        {label}
+      </label>
+      {helpText && <p className="text-xs text-slate-400 mb-2">{helpText}</p>}
 
       {value && (
         <div className="mb-3 relative inline-block">

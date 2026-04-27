@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/admin/markets", label: "Markets", icon: "★" },
   { href: "/admin/trucks", label: "Food Trucks", icon: "◉" },
   { href: "/admin/photos", label: "Photo Gallery", icon: "▤" },
+  { href: "/admin/schedules", label: "Schedules", icon: "▣" },
   { href: "/admin/pages", label: "Page Content", icon: "☰" },
   { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
   { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },

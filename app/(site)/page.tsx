@@ -17,6 +17,12 @@ type HoursContent = {
   hours: { day: string; time: string }[];
 };
 
+type ScheduleImagesContent = {
+  monthly_image_url?: string;
+  weekly_image_url?: string;
+  upcoming_event_image_urls?: unknown;
+};
+
 type VisitUsContent = {
   heading: string;
   address: string;
@@ -39,11 +45,37 @@ export default async function HomePage() {
 
   const hero = sections.hero as HeroContent | undefined;
   const hoursData = sections.hours as HoursContent | undefined;
+  const scheduleImages = sections.schedules as ScheduleImagesContent | undefined;
   const visitUs = sections.visit_us as VisitUsContent | undefined;
   const values = sections.values as TextSection | undefined;
   const enjoy = sections.enjoy as TextSection | undefined;
   const drinkUp = sections.drink_up as TextSection | undefined;
   const foodTruckCta = sections.food_truck_cta as CtaSection | undefined;
+  const schedules = [
+    {
+      title: "This Month",
+      src: scheduleImages?.monthly_image_url?.trim(),
+      alt: "Monthly schedule at Hilltop Truck Park",
+    },
+    {
+      title: "This Week",
+      src: scheduleImages?.weekly_image_url?.trim(),
+      alt: "Weekly schedule at Hilltop Truck Park",
+    },
+  ].filter((item): item is { title: string; src: string; alt: string } =>
+    Boolean(item.src),
+  );
+  const upcomingEventImages = Array.isArray(
+    scheduleImages?.upcoming_event_image_urls,
+  )
+    ? scheduleImages.upcoming_event_image_urls
+        .filter(
+          (src): src is string => typeof src === "string" && src.trim() !== "",
+        )
+        .map((src) => src.trim())
+        .slice(0, 3)
+    : [];
+  const hasScheduleImages = schedules.length > 0 || upcomingEventImages.length > 0;
 
   return (
     <>
@@ -149,6 +181,51 @@ export default async function HomePage() {
               ))}
             </div>
           </div>
+          {hasScheduleImages && (
+            <div className="mx-auto mt-16 max-w-5xl">
+              <div className="grid gap-8 md:grid-cols-2">
+                {schedules.map((schedule) => (
+                  <section key={schedule.title} className="htp-card p-4 sm:p-5">
+                    <h3 className="mb-4 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
+                      {schedule.title}
+                    </h3>
+                    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.25rem] border border-htp-line bg-white">
+                      <Image
+                        src={schedule.src}
+                        alt={schedule.alt}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  </section>
+                ))}
+                {upcomingEventImages.length > 0 && (
+                  <section className="htp-card p-4 sm:p-5 md:col-span-2">
+                    <h3 className="mb-4 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
+                      Upcoming Events
+                    </h3>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {upcomingEventImages.map((src, index) => (
+                        <div
+                          key={`${src}-${index}`}
+                          className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.25rem] border border-htp-line bg-white"
+                        >
+                          <Image
+                            src={src}
+                            alt={`Upcoming event at Hilltop Truck Park ${index + 1}`}
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

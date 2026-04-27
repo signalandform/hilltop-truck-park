@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { SocialLinks } from "@/components/SocialLinks";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -37,6 +38,11 @@ export default function Footer() {
                 jack@signalandformllc.com
               </a>
             </p>
+            <SocialLinks
+              className="mt-5"
+              label="Hilltop Truck Park social links"
+              variant="footer"
+            />
           </div>
           <nav className="flex flex-col gap-2" aria-label="Footer navigation">
             {navLinks.map((link) => (

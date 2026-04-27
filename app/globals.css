@@ -168,6 +168,9 @@ body::before {
   .htp-hero-anim > *:nth-child(6) {
     animation-delay: 0.3s;
   }
+  .htp-hero-anim > *:nth-child(7) {
+    animation-delay: 0.35s;
+  }
 
   .htp-nav-link {
     @apply relative inline-block;

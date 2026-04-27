@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPageSections, CMS_REVALIDATE } from "@/lib/cms";
 import { SectionWave } from "@/components/decor/SectionWave";
+import { SocialLinks } from "@/components/SocialLinks";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -153,6 +154,11 @@ export default async function HomePage() {
                   Contact Us
                 </Link>
               </div>
+              <SocialLinks
+                className="mt-6"
+                label="Hilltop Truck Park social links"
+                variant="light"
+              />
             </div>
           </div>
         </div>

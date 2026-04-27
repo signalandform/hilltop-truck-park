@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { SocialLinks } from "@/components/SocialLinks";
 
 export default function ContactUsPage() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -58,6 +59,12 @@ export default function ContactUsPage() {
             >
               info@hilltoptruckpark.com
             </a>
+          </div>
+          <div className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-6 max-w-xl mx-auto">
+            <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-4">
+              Follow Us
+            </h2>
+            <SocialLinks label="Hilltop Truck Park social links" />
           </div>
         </div>
 

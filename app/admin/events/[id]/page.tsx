@@ -20,6 +20,7 @@ type Form = {
   price: string;
   tag: string;
   image_url: string;
+  capacity_limit: string;
   cta_label: string;
   cta_href: string;
   sort_order: number;
@@ -36,6 +37,7 @@ const EMPTY: Form = {
   price: "",
   tag: "",
   image_url: "",
+  capacity_limit: "",
   cta_label: "Buy Tickets",
   cta_href: "https://www.hilltoptruckpark.com/events-2",
   sort_order: 0,
@@ -74,6 +76,7 @@ export default function EventEditor() {
           price: data.price ?? "",
           tag: data.tag ?? "",
           image_url: data.image_url ?? "",
+          capacity_limit: data.capacity_limit?.toString() ?? "",
           cta_label: data.cta_label ?? "Buy Tickets",
           cta_href: data.cta_href ?? "",
           sort_order: data.sort_order,
@@ -98,6 +101,16 @@ export default function EventEditor() {
       setError("Title and slug are required.");
       return;
     }
+    const capacityLimit = form.capacity_limit.trim()
+      ? Number(form.capacity_limit)
+      : null;
+    if (
+      capacityLimit !== null &&
+      (!Number.isInteger(capacityLimit) || capacityLimit < 0)
+    ) {
+      setError("Capacity limit must be a whole number zero or greater.");
+      return;
+    }
     setSaving(true);
 
     const payload = {
@@ -110,6 +123,7 @@ export default function EventEditor() {
       price: form.price.trim() || null,
       tag: form.tag.trim() || null,
       image_url: form.image_url.trim() || null,
+      capacity_limit: capacityLimit,
       cta_label: form.cta_label.trim() || "Buy Tickets",
       cta_href: form.cta_href.trim(),
       sort_order: form.sort_order,
@@ -215,7 +229,7 @@ export default function EventEditor() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Tag</label>
             <input
@@ -239,6 +253,19 @@ export default function EventEditor() {
               placeholder='e.g. "$40 / ticket" (optional)'
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Capacity Limit</label>
+            <input
+              type="number"
+              value={form.capacity_limit}
+              onChange={(e) => update("capacity_limit", e.target.value)}
+              placeholder="Blank = unlimited"
+              min="0"
+              step="1"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="text-xs text-slate-400 mt-1">Leave blank for no capacity limit</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Sort Order</label>

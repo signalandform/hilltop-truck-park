@@ -47,6 +47,12 @@ function EventCard({ event }: { event: CmsEvent }) {
         {event.price && (
           <p className="text-sm font-medium text-htp-navy mb-4">{event.price}</p>
         )}
+        {event.capacity_limit !== null && (
+          <p className="text-xs font-medium uppercase tracking-[0.12em] text-htp-red mb-4">
+            Limited to {event.capacity_limit} spot
+            {event.capacity_limit !== 1 ? "s" : ""}
+          </p>
+        )}
         {event.cta_href ? (
           <a
             href={event.cta_href}

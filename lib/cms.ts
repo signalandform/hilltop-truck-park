@@ -58,6 +58,7 @@ export type CmsEvent = {
   price: string | null;
   tag: string | null;
   image_url: string | null;
+  capacity_limit: number | null;
   cta_label: string;
   cta_href: string;
   is_published: boolean;

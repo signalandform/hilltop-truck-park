@@ -66,6 +66,7 @@ export default function AdminEventsList() {
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Title</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Tag</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Price</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-600">Capacity</th>
                 <th className="text-center px-4 py-3 font-medium text-slate-600">Status</th>
                 <th className="text-right px-4 py-3 font-medium text-slate-600">Actions</th>
               </tr>
@@ -98,6 +99,9 @@ export default function AdminEventsList() {
                     <td className="px-4 py-3 font-medium text-slate-900">{event.title}</td>
                     <td className="px-4 py-3 text-slate-500">{event.tag ?? "—"}</td>
                     <td className="px-4 py-3 text-slate-500">{event.price ?? "—"}</td>
+                    <td className="px-4 py-3 text-center text-slate-500">
+                      {event.capacity_limit ?? "Unlimited"}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <span
                         className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${

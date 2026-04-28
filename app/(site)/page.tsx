@@ -185,8 +185,11 @@ export default async function HomePage() {
             <div className="mx-auto mt-16 max-w-6xl">
               <div className="grid gap-10">
                 {schedules.map((schedule) => (
-                  <section key={schedule.title} className="htp-card p-5 sm:p-7">
-                    <h3 className="mb-5 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-navy">
+                  <section
+                    key={schedule.title}
+                    className="rounded-card border border-white/10 bg-htp-navy p-5 shadow-md sm:p-7"
+                  >
+                    <h3 className="mb-5 text-center font-display text-htp-h3 uppercase tracking-[0.04em] text-htp-cream">
                       {schedule.title}
                     </h3>
                     <Image
@@ -194,7 +197,7 @@ export default async function HomePage() {
                       alt={schedule.alt}
                       width={1600}
                       height={900}
-                      className="h-auto w-full rounded-[1.25rem] border border-htp-line"
+                      className="h-auto w-full rounded-[1.25rem] border border-white/15"
                       sizes="(max-width: 768px) 100vw, 1152px"
                     />
                   </section>

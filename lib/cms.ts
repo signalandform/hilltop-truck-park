@@ -40,6 +40,7 @@ export type FoodTruck = {
   cuisine: string;
   blurb: string | null;
   image_url: string | null;
+  website_url: string | null;
   is_active: boolean;
   sort_order: number;
   created_at: string;
@@ -98,6 +99,10 @@ export type GalleryPhoto = {
   height: number | null;
   created_at: string;
   updated_at: string;
+};
+
+export type MarketGalleryContent = {
+  images?: { src?: unknown; alt?: unknown }[];
 };
 
 // ---------------------------------------------------------------------------
@@ -330,6 +335,20 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
 
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getMarketGalleryContent(): Promise<MarketGalleryContent | null> {
+  const { data, error } = await supabase
+    .from("cms_page_content")
+    .select("content")
+    .eq("page_slug", "markets")
+    .eq("section_key", "gallery")
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data?.content as MarketGalleryContent) ?? null;
 }
 
 export async function getPageSections(

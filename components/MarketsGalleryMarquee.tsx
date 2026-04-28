@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 export type MarketGallerySlide = {
   src: string;
   alt: string;
@@ -17,7 +15,15 @@ type Props = {
 export function MarketsGalleryMarquee({ images }: Props) {
   if (images.length === 0) return null;
 
-  const loop = [...images, ...images];
+  const minVisibleTiles = 5;
+  const baseImages =
+    images.length >= minVisibleTiles
+      ? images
+      : Array.from(
+          { length: minVisibleTiles },
+          (_, index) => images[index % images.length],
+        );
+  const loop = [...baseImages, ...baseImages];
 
   return (
     <div className="mb-12 w-full overflow-hidden rounded-card border border-htp-line bg-htp-bg/80 shadow-sm">
@@ -27,12 +33,12 @@ export function MarketsGalleryMarquee({ images }: Props) {
             key={`${item.src}-${i}`}
             className="relative h-32 w-[min(19vw,11.5rem)] shrink-0 overflow-hidden rounded-[0.65rem] sm:h-36 sm:w-[min(19vw,12rem)]"
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={item.src}
               alt={item.alt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 38vw, (max-width: 1200px) 19vw, 192px"
+              loading="lazy"
+              className="h-full w-full object-cover"
             />
           </div>
         ))}

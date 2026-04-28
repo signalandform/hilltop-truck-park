@@ -99,6 +99,16 @@ export default async function OurFoodTrucksPage() {
                 {displayBlurb && (
                   <p className="text-htp-ink text-sm leading-[1.55]">{displayBlurb}</p>
                 )}
+                {truck.website_url && (
+                  <a
+                    href={truck.website_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex text-sm font-medium text-htp-red hover:underline"
+                  >
+                    Visit Truck
+                  </a>
+                )}
               </div>
             </div>
             );

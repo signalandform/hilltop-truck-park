@@ -5,8 +5,10 @@ import { MarketsGalleryMarquee, type MarketGallerySlide } from "@/components/Mar
 import {
   getUpcomingMarkets,
   getGalleryPhotos,
+  getMarketGalleryContent,
   CMS_REVALIDATE,
   type GalleryPhoto,
+  type MarketGalleryContent,
 } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
@@ -43,6 +45,20 @@ const MARKET_GALLERY_FALLBACK_SRCS = [
 
 const MARKET_GALLERY_MAX_SLIDES = 14;
 
+function buildConfiguredGallerySlides(
+  content: MarketGalleryContent | null,
+): MarketGallerySlide[] {
+  const images = Array.isArray(content?.images) ? content.images : [];
+  return images
+    .map((image) => {
+      const src = typeof image.src === "string" ? image.src.trim() : "";
+      const alt = typeof image.alt === "string" ? image.alt.trim() : "";
+      return src ? { src, alt: alt || "Hilltop Truck Park market photo" } : null;
+    })
+    .filter((image): image is MarketGallerySlide => image !== null)
+    .slice(0, MARKET_GALLERY_MAX_SLIDES);
+}
+
 function buildMarketGallerySlides(photos: GalleryPhoto[]): MarketGallerySlide[] {
   const seen = new Set<string>();
   const out: MarketGallerySlide[] = [];
@@ -67,11 +83,16 @@ function buildMarketGallerySlides(photos: GalleryPhoto[]): MarketGallerySlide[] 
 }
 
 export default async function MarketsPage() {
-  const [upcoming, galleryPhotos] = await Promise.all([
+  const [upcoming, galleryPhotos, galleryContent] = await Promise.all([
     getUpcomingMarkets(),
     getGalleryPhotos(),
+    getMarketGalleryContent(),
   ]);
-  const marketGallerySlides = buildMarketGallerySlides(galleryPhotos);
+  const configuredGallerySlides = buildConfiguredGallerySlides(galleryContent);
+  const marketGallerySlides =
+    configuredGallerySlides.length > 0
+      ? configuredGallerySlides
+      : buildMarketGallerySlides(galleryPhotos);
 
   return (
     <section className="py-24 px-4">

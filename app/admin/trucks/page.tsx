@@ -55,6 +55,7 @@ export default function AdminTrucksList() {
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Name</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Cuisine</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Blurb</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-600">Link</th>
                 <th className="text-center px-4 py-3 font-medium text-slate-600">Order</th>
                 <th className="text-center px-4 py-3 font-medium text-slate-600">Status</th>
                 <th className="text-right px-4 py-3 font-medium text-slate-600">Actions</th>
@@ -70,6 +71,21 @@ export default function AdminTrucksList() {
                   <td className="px-4 py-3 font-medium text-slate-900">{truck.name}</td>
                   <td className="px-4 py-3 text-slate-500">{truck.cuisine}</td>
                   <td className="px-4 py-3 text-slate-500 max-w-xs truncate">{truck.blurb ?? "—"}</td>
+                  <td className="px-4 py-3 text-center">
+                    {truck.website_url ? (
+                      <a
+                        href={truck.website_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:underline text-xs font-medium"
+                      >
+                        Open
+                      </a>
+                    ) : (
+                      <span className="text-slate-400 text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-center text-slate-500">{truck.sort_order}</td>
                   <td className="px-4 py-3 text-center">
                     <span

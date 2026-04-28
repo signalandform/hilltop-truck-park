@@ -11,6 +11,7 @@ type Form = {
   cuisine: string;
   blurb: string;
   image_url: string;
+  website_url: string;
   sort_order: number;
   is_active: boolean;
 };
@@ -20,9 +21,23 @@ const EMPTY: Form = {
   cuisine: "",
   blurb: "",
   image_url: "",
+  website_url: "",
   sort_order: 0,
   is_active: true,
 };
+
+function normalizeExternalUrl(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    const url = new URL(withScheme);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
 
 export default function TruckEditor() {
   const { id } = useParams<{ id: string }>();
@@ -48,6 +63,7 @@ export default function TruckEditor() {
           cuisine: data.cuisine,
           blurb: data.blurb ?? "",
           image_url: data.image_url ?? "",
+          website_url: data.website_url ?? "",
           sort_order: data.sort_order,
           is_active: data.is_active,
         });
@@ -65,6 +81,11 @@ export default function TruckEditor() {
       setError("Name and cuisine are required.");
       return;
     }
+    const websiteUrl = normalizeExternalUrl(form.website_url);
+    if (form.website_url.trim() && !websiteUrl) {
+      setError("Outbound link must be a valid http(s) URL.");
+      return;
+    }
     setSaving(true);
 
     const payload = {
@@ -72,6 +93,7 @@ export default function TruckEditor() {
       cuisine: form.cuisine.trim(),
       blurb: form.blurb.trim() || null,
       image_url: form.image_url.trim() || null,
+      website_url: websiteUrl,
       sort_order: form.sort_order,
       is_active: form.is_active,
       updated_at: new Date().toISOString(),
@@ -149,6 +171,22 @@ export default function TruckEditor() {
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Outbound Link
+          </label>
+          <input
+            type="url"
+            value={form.website_url}
+            onChange={(e) => update("website_url", e.target.value)}
+            placeholder="https://instagram.com/foodtruck"
+            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <p className="mt-1 text-xs text-slate-500">
+            Optional website, menu, Instagram, or ordering link shown on the public food truck card.
+          </p>
         </div>
 
         <ImageUpload

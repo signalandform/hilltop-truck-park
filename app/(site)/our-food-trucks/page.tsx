@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import { BottlecapImageFrame } from "@/components/decor/BottlecapImageFrame";
 import {
   foodTruckImageIsLogoAsset,
   resolveFoodTruckImageUrl,
@@ -78,16 +78,12 @@ export default async function OurFoodTrucksPage() {
               className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden"
             >
               {imageSrc && (
-                <div className="relative w-full aspect-[4/3] bg-white border-b border-htp-line">
-                  <Image
+                <div className="flex justify-center border-b border-htp-line bg-htp-bg px-6 py-7">
+                  <BottlecapImageFrame
+                    id={truck.id}
                     src={imageSrc}
                     alt=""
-                    aria-hidden
-                    fill
-                    className={
-                      logoStyle ? "object-contain p-6 sm:p-8" : "object-cover"
-                    }
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    logoStyle={logoStyle}
                   />
                 </div>
               )}

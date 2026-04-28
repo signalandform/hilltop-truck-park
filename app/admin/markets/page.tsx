@@ -69,6 +69,7 @@ export default function AdminMarketsList() {
   const [galleryError, setGalleryError] = useState("");
   const [galleryUploading, setGalleryUploading] = useState(false);
   const [galleryDragActive, setGalleryDragActive] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryUploads, setGalleryUploads] = useState<GalleryUpload[]>([]);
   const galleryFileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -291,19 +292,34 @@ export default function AdminMarketsList() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">
+            <button
+              type="button"
+              onClick={() => setGalleryOpen((open) => !open)}
+              className="flex items-center gap-2 text-left text-sm font-semibold text-slate-900 hover:text-slate-700"
+              aria-expanded={galleryOpen}
+            >
+              <span
+                className={`inline-block transition-transform ${
+                  galleryOpen ? "rotate-90" : ""
+                }`}
+                aria-hidden
+              >
+                ▶
+              </span>
               Markets Page Photo Gallery
-            </h2>
+            </button>
             <p className="text-xs text-slate-500 mt-1 max-w-2xl">
-              Controls the slow five-wide gallery on <code>/markets</code>. Add image URLs from
-              the Photo Gallery, Supabase storage, Wix, or local <code>/images/...</code> assets.
-              If no URLs are saved, the page falls back to published Photo Gallery images.
+              {galleryLoading
+                ? "Loading gallery settings..."
+                : `${galleryItems.length} custom image${
+                    galleryItems.length === 1 ? "" : "s"
+                  } configured. Expand only when you need to edit the sliding gallery.`}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <a
               href="/markets"
               target="_blank"
@@ -314,177 +330,196 @@ export default function AdminMarketsList() {
             </a>
             <button
               type="button"
-              onClick={saveGallery}
-              disabled={gallerySaving || galleryLoading}
-              className="bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition-colors"
+              onClick={() => setGalleryOpen((open) => !open)}
+              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
             >
-              {gallerySaving ? "Saving..." : "Save Gallery"}
+              {galleryOpen ? "Collapse" : "Edit Gallery"}
             </button>
           </div>
         </div>
 
-        {galleryError && (
-          <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-            {galleryError}
-          </p>
-        )}
-        {galleryMessage && (
-          <p className="mt-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
-            {galleryMessage}
-          </p>
-        )}
-
-        <div
-          className={`mt-5 rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
-            galleryDragActive
-              ? "border-blue-400 bg-blue-50"
-              : "border-slate-300 bg-slate-50"
-          }`}
-          onDragEnter={(e) => {
-            e.preventDefault();
-            setGalleryDragActive(true);
-          }}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setGalleryDragActive(true);
-          }}
-          onDragLeave={(e) => {
-            e.preventDefault();
-            if (e.currentTarget === e.target) setGalleryDragActive(false);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setGalleryDragActive(false);
-            uploadGalleryFiles(e.dataTransfer.files);
-          }}
-        >
-          <input
-            ref={galleryFileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files) uploadGalleryFiles(e.target.files);
-            }}
-          />
-          <p className="text-sm font-medium text-slate-800">
-            Drag and drop market gallery photos here
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Or choose files to upload. Images are saved to Supabase storage and added to this
-            gallery automatically.
-          </p>
-          <button
-            type="button"
-            onClick={() => galleryFileInputRef.current?.click()}
-            disabled={galleryUploading || gallerySaving || galleryLoading}
-            className="mt-3 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 disabled:opacity-50"
-          >
-            {galleryUploading ? "Uploading..." : "Choose Images"}
-          </button>
-        </div>
-
-        {galleryUploads.length > 0 && (
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {galleryUploads.map((upload) => (
-              <li
-                key={upload.id}
-                className={`rounded-lg border px-3 py-2 text-xs ${
-                  upload.status === "error"
-                    ? "border-red-200 bg-red-50 text-red-700"
-                    : upload.status === "done"
-                      ? "border-green-200 bg-green-50 text-green-700"
-                      : "border-blue-200 bg-blue-50 text-blue-700"
-                }`}
-              >
-                <span className="block truncate font-medium">{upload.name}</span>
-                <span>
-                  {upload.status === "uploading"
-                    ? "Uploading..."
-                    : upload.status === "done"
-                      ? "Uploaded"
-                      : upload.error}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {galleryLoading ? (
-          <div className="mt-5 text-sm text-slate-500">Loading gallery settings...</div>
-        ) : (
-          <div className="mt-5 space-y-3">
-            {galleryItems.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-sm text-slate-500">
-                No custom gallery images yet. Add URLs below to override the automatic gallery.
+        {galleryOpen && (
+          <>
+            <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+              <p className="text-xs text-slate-500">
+                Add image URLs from Photo Gallery, Supabase storage, Wix, or local{" "}
+                <code>/images/...</code> assets. If no URLs are saved, the public page falls back
+                to published Photo Gallery images.
               </p>
-            ) : (
-              galleryItems.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 md:grid-cols-[4.5rem_1fr_1fr_auto]"
-                >
-                  <div className="relative h-16 w-16 overflow-hidden rounded-md bg-slate-200">
-                    {item.src.trim() ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.src}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-[10px] text-slate-500">
-                        #{index + 1}
-                      </div>
-                    )}
-                  </div>
-                  <label className="block">
-                    <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                      Image URL
-                    </span>
-                    <input
-                      type="text"
-                      value={item.src}
-                      onChange={(e) => updateGalleryItem(item.id, "src", e.target.value)}
-                      placeholder="/images/photo-fun/example.jpg"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                      Alt Text
-                    </span>
-                    <input
-                      type="text"
-                      value={item.alt}
-                      onChange={(e) => updateGalleryItem(item.id, "alt", e.target.value)}
-                      placeholder="Market vendors at Hilltop Truck Park"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => removeGalleryItem(item.id)}
-                    className="self-end rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))
+              <button
+                type="button"
+                onClick={saveGallery}
+                disabled={gallerySaving || galleryLoading}
+                className="shrink-0 bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition-colors"
+              >
+                {gallerySaving ? "Saving..." : "Save Gallery"}
+              </button>
+            </div>
+
+            {galleryError && (
+              <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                {galleryError}
+              </p>
+            )}
+            {galleryMessage && (
+              <p className="mt-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
+                {galleryMessage}
+              </p>
             )}
 
-            <button
-              type="button"
-              onClick={() => {
-                setGalleryItems((prev) => [...prev, newGalleryItem()]);
-                setGalleryMessage("");
+            <div
+              className={`mt-5 rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
+                galleryDragActive
+                  ? "border-blue-400 bg-blue-50"
+                  : "border-slate-300 bg-slate-50"
+              }`}
+              onDragEnter={(e) => {
+                e.preventDefault();
+                setGalleryDragActive(true);
               }}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              onDragOver={(e) => {
+                e.preventDefault();
+                setGalleryDragActive(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                if (e.currentTarget === e.target) setGalleryDragActive(false);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                setGalleryDragActive(false);
+                uploadGalleryFiles(e.dataTransfer.files);
+              }}
             >
-              + Add image URL
-            </button>
-          </div>
+              <input
+                ref={galleryFileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files) uploadGalleryFiles(e.target.files);
+                }}
+              />
+              <p className="text-sm font-medium text-slate-800">
+                Drag and drop market gallery photos here
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Or choose files to upload. Images are saved to Supabase storage and added to this
+                gallery automatically.
+              </p>
+              <button
+                type="button"
+                onClick={() => galleryFileInputRef.current?.click()}
+                disabled={galleryUploading || gallerySaving || galleryLoading}
+                className="mt-3 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 disabled:opacity-50"
+              >
+                {galleryUploading ? "Uploading..." : "Choose Images"}
+              </button>
+            </div>
+
+            {galleryUploads.length > 0 && (
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryUploads.map((upload) => (
+                  <li
+                    key={upload.id}
+                    className={`rounded-lg border px-3 py-2 text-xs ${
+                      upload.status === "error"
+                        ? "border-red-200 bg-red-50 text-red-700"
+                        : upload.status === "done"
+                          ? "border-green-200 bg-green-50 text-green-700"
+                          : "border-blue-200 bg-blue-50 text-blue-700"
+                    }`}
+                  >
+                    <span className="block truncate font-medium">{upload.name}</span>
+                    <span>
+                      {upload.status === "uploading"
+                        ? "Uploading..."
+                        : upload.status === "done"
+                          ? "Uploaded"
+                          : upload.error}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {galleryLoading ? (
+              <div className="mt-5 text-sm text-slate-500">Loading gallery settings...</div>
+            ) : (
+              <div className="mt-5 space-y-3">
+                {galleryItems.length === 0 ? (
+                  <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center text-sm text-slate-500">
+                    No custom gallery images yet. Add URLs below to override the automatic gallery.
+                  </p>
+                ) : (
+                  galleryItems.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 md:grid-cols-[4.5rem_1fr_1fr_auto]"
+                    >
+                      <div className="relative h-16 w-16 overflow-hidden rounded-md bg-slate-200">
+                        {item.src.trim() ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.src}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-[10px] text-slate-500">
+                            #{index + 1}
+                          </div>
+                        )}
+                      </div>
+                      <label className="block">
+                        <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                          Image URL
+                        </span>
+                        <input
+                          type="text"
+                          value={item.src}
+                          onChange={(e) => updateGalleryItem(item.id, "src", e.target.value)}
+                          placeholder="/images/photo-fun/example.jpg"
+                          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                          Alt Text
+                        </span>
+                        <input
+                          type="text"
+                          value={item.alt}
+                          onChange={(e) => updateGalleryItem(item.id, "alt", e.target.value)}
+                          placeholder="Market vendors at Hilltop Truck Park"
+                          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryItem(item.id)}
+                        className="self-end rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGalleryItems((prev) => [...prev, newGalleryItem()]);
+                    setGalleryMessage("");
+                  }}
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  + Add image URL
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

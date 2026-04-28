@@ -10,12 +10,12 @@ export function HoursBottlecaps({ hours }: Props) {
 
   return (
     <ul
-      className="htp-hours-bottlecaps mx-auto flex list-none flex-wrap justify-center gap-x-3 gap-y-5 px-1 sm:gap-x-4 sm:gap-y-6"
+      className="htp-hours-bottlecaps mx-auto flex list-none flex-wrap justify-center gap-x-4 gap-y-6 px-1 sm:gap-x-5 sm:gap-y-7"
       aria-label="Weekly opening hours"
     >
       {hours.map(({ day, time }, i) => (
         <li key={`${day}-${i}`} className="htp-bottlecap-item">
-          <div className="htp-bottlecap relative flex aspect-square w-[4.65rem] shrink-0 items-center justify-center sm:w-[5.25rem] md:w-[5.65rem] lg:w-[6rem]">
+          <div className="htp-bottlecap relative flex aspect-square w-[5.75rem] shrink-0 items-center justify-center sm:w-[6.5rem] md:w-[7rem] lg:w-[7.5rem]">
             <svg
               className="absolute inset-0 h-full w-full text-htp-navy drop-shadow-[0_2px_6px_rgb(0_0_0_/_0.12)]"
               viewBox="0 0 100 100"
@@ -44,10 +44,10 @@ export function HoursBottlecaps({ hours }: Props) {
               />
             </svg>
             <div className="relative z-[1] flex max-w-[92%] flex-col items-center justify-center px-0.5 text-center leading-none text-white">
-              <span className="font-display text-[0.625rem] uppercase tracking-[0.08em] sm:text-[0.6875rem] md:text-xs">
+              <span className="font-display text-xs uppercase tracking-[0.08em] sm:text-sm">
                 {day}
               </span>
-              <span className="font-display mt-1 text-[0.6875rem] leading-tight tracking-wide sm:text-[0.75rem] md:text-[0.8125rem]">
+              <span className="font-display mt-1 text-sm leading-tight tracking-wide sm:text-[0.9375rem] md:text-base">
                 {time}
               </span>
             </div>

@@ -25,12 +25,12 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
       }`}
     >
       {event.image_url && (
-        <div className="relative w-full aspect-[16/9]">
+        <div className="relative w-full aspect-[4/5] bg-htp-navy/5">
           <Image
             src={event.image_url}
             alt={event.title}
             fill
-            className="object-cover"
+            className="object-contain p-3"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </div>

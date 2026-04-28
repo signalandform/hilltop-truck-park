@@ -17,7 +17,7 @@ export function BottlecapImageFrame({ src, alt = "", id }: Props) {
   const clipId = `htp-bottlecap-image-clip-${safeId}`;
 
   return (
-    <div className="relative flex aspect-square w-48 items-center justify-center sm:w-52">
+    <div className="relative flex aspect-square w-60 items-center justify-center sm:w-64 lg:w-72">
       <svg
         className="absolute inset-0 h-full w-full drop-shadow-[0_4px_12px_rgb(0_0_0_/_0.16)]"
         viewBox="0 0 100 100"
@@ -46,7 +46,7 @@ export function BottlecapImageFrame({ src, alt = "", id }: Props) {
           alt={alt}
           fill
           className="scale-110 object-cover"
-          sizes="(max-width: 640px) 192px, 208px"
+          sizes="(max-width: 640px) 240px, (max-width: 1024px) 256px, 288px"
         />
       </div>
     </div>

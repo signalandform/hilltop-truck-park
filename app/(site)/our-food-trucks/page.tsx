@@ -64,27 +64,40 @@ export default async function OurFoodTrucksPage() {
         <h2 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-6">
           Our Trucks
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {trucks.map((truck) => {
             const imageSrc = resolveFoodTruckImageUrl(truck);
             const displayBlurb = getFoodTruckDisplayBlurb(truck.name, truck.blurb);
+            const displayName = getFoodTruckDisplayName(truck.name);
+            const bottlecapImage = imageSrc ? (
+              <BottlecapImageFrame
+                id={truck.id}
+                src={imageSrc}
+                alt=""
+              />
+            ) : null;
             return (
-            <div
+            <article
               key={truck.id}
-              className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden"
+              className="flex flex-col items-center text-center"
             >
-              {imageSrc && (
-                <div className="flex justify-center border-b border-htp-line bg-htp-bg px-6 py-7">
-                  <BottlecapImageFrame
-                    id={truck.id}
-                    src={imageSrc}
-                    alt=""
-                  />
-                </div>
-              )}
-              <div className="p-6">
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-1">
-                  {getFoodTruckDisplayName(truck.name)}
+              {bottlecapImage &&
+                (truck.website_url ? (
+                  <a
+                    href={truck.website_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Visit ${displayName}`}
+                    className="group inline-flex rounded-full transition-transform hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-htp-red"
+                  >
+                    {bottlecapImage}
+                  </a>
+                ) : (
+                  bottlecapImage
+                ))}
+              <div className="mt-5 max-w-sm">
+                <h3 className="font-display text-xl text-htp-navy uppercase tracking-[0.04em] mb-1">
+                  {displayName}
                 </h3>
                 <p className="text-sm text-htp-red mb-3">{truck.cuisine}</p>
                 {displayBlurb && (
@@ -101,7 +114,7 @@ export default async function OurFoodTrucksPage() {
                   </a>
                 )}
               </div>
-            </div>
+            </article>
             );
           })}
         </div>

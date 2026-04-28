@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  foodTruckImageIsLogoAsset,
+  resolveFoodTruckImageUrl,
+} from "@/lib/food-truck-logos";
 import { getFoodTrucks, CMS_REVALIDATE } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
@@ -59,18 +63,24 @@ export default async function OurFoodTrucksPage() {
           Our Trucks
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {trucks.map((truck) => (
+          {trucks.map((truck) => {
+            const imageSrc = resolveFoodTruckImageUrl(truck);
+            const logoStyle = imageSrc ? foodTruckImageIsLogoAsset(imageSrc) : false;
+            return (
             <div
               key={truck.id}
               className="bg-htp-cream border border-htp-line rounded-card shadow-sm overflow-hidden"
             >
-              {truck.image_url && (
-                <div className="relative w-full aspect-[4/3]">
+              {imageSrc && (
+                <div className="relative w-full aspect-[4/3] bg-white border-b border-htp-line">
                   <Image
-                    src={truck.image_url}
-                    alt={truck.name}
+                    src={imageSrc}
+                    alt=""
+                    aria-hidden
                     fill
-                    className="object-cover"
+                    className={
+                      logoStyle ? "object-contain p-6 sm:p-8" : "object-cover"
+                    }
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
@@ -85,7 +95,8 @@ export default async function OurFoodTrucksPage() {
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

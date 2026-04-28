@@ -66,7 +66,7 @@ export default function AdminEventsList() {
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Title</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Tag</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Price</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-600">Capacity</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-600">Signups</th>
                 <th className="text-center px-4 py-3 font-medium text-slate-600">Status</th>
                 <th className="text-right px-4 py-3 font-medium text-slate-600">Actions</th>
               </tr>
@@ -101,7 +101,7 @@ export default function AdminEventsList() {
                     <td className="px-4 py-3 text-slate-500">{event.price ?? "—"}</td>
                     <td className="px-4 py-3 text-center text-slate-500">
                       {event.capacity_limit !== null
-                        ? `${event.reserved_count}/${event.capacity_limit}`
+                        ? `${event.reserved_count} / ${event.capacity_limit}`
                         : `${event.reserved_count} / Unlimited`}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -117,7 +117,7 @@ export default function AdminEventsList() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <Link
-                        href={`/admin/events/${event.id}/signups`}
+                        href={`/admin/events/${event.id}#event-reservations`}
                         onClick={(e) => e.stopPropagation()}
                         className="text-blue-600 hover:text-blue-800 text-xs font-medium mr-3"
                       >

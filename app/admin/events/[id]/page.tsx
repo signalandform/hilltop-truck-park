@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { EventReservationsPanel } from "@/components/admin/EventReservationsPanel";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
 function slugify(text: string): string {
@@ -161,7 +162,7 @@ export default function EventEditor() {
         <div className="flex items-center gap-3">
           {!isNew && (
             <Link
-              href={`/admin/events/${id}/signups`}
+              href="#event-reservations"
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
               {form.reserved_count} reserved
@@ -350,6 +351,15 @@ export default function EventEditor() {
           </div>
         </div>
       </div>
+
+      {!isNew && (
+        <EventReservationsPanel
+          eventId={id}
+          onReservedCountChange={(reservedCount) =>
+            update("reserved_count", reservedCount)
+          }
+        />
+      )}
     </>
   );
 }

@@ -1,14 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { CmsEventSignup } from "@/lib/cms";
 
 type EventSummary = {
-  title: string;
-  event_date: string | null;
   capacity_limit: number | null;
   reserved_count: number;
 };
@@ -21,6 +17,11 @@ type Form = {
   message: string;
 };
 
+type Props = {
+  eventId: string;
+  onReservedCountChange?: (reservedCount: number) => void;
+};
+
 const EMPTY_FORM: Form = {
   name: "",
   email: "",
@@ -28,15 +29,6 @@ const EMPTY_FORM: Form = {
   partySize: "1",
   message: "",
 };
-
-function formatDate(value: string | null) {
-  if (!value) return "No date set";
-  return new Date(value + "T00:00:00").toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function formatSubmittedAt(value: string) {
   return new Date(value).toLocaleDateString("en-US", {
@@ -47,8 +39,10 @@ function formatSubmittedAt(value: string) {
   });
 }
 
-export default function EventSignupsPage() {
-  const { id } = useParams<{ id: string }>();
+export function EventReservationsPanel({
+  eventId,
+  onReservedCountChange,
+}: Props) {
   const [event, setEvent] = useState<EventSummary | null>(null);
   const [signups, setSignups] = useState<CmsEventSignup[]>([]);
   const [form, setForm] = useState<Form>(EMPTY_FORM);
@@ -62,13 +56,13 @@ export default function EventSignupsPage() {
     const [eventRes, signupsRes] = await Promise.all([
       supabase
         .from("cms_events")
-        .select("title, event_date, capacity_limit, reserved_count")
-        .eq("id", id)
+        .select("capacity_limit, reserved_count")
+        .eq("id", eventId)
         .single(),
       supabase
         .from("cms_event_signups")
         .select("*")
-        .eq("event_id", id)
+        .eq("event_id", eventId)
         .order("created_at", { ascending: false }),
     ]);
 
@@ -76,6 +70,7 @@ export default function EventSignupsPage() {
       setError(eventRes.error.message);
     } else {
       setEvent(eventRes.data);
+      onReservedCountChange?.(eventRes.data.reserved_count);
     }
 
     if (signupsRes.error) {
@@ -85,7 +80,7 @@ export default function EventSignupsPage() {
     }
 
     setLoading(false);
-  }, [id]);
+  }, [eventId, onReservedCountChange]);
 
   useEffect(() => {
     void loadData();
@@ -118,7 +113,7 @@ export default function EventSignupsPage() {
 
     setSaving(true);
     const { error: insertError } = await supabase.from("cms_event_signups").insert({
-      event_id: id,
+      event_id: eventId,
       name: form.name.trim(),
       email: form.email.trim(),
       phone: form.phone.trim() || null,
@@ -163,22 +158,7 @@ export default function EventSignupsPage() {
   };
 
   return (
-    <>
-      <div className="mb-6">
-        <Link
-          href={`/admin/events/${id}`}
-          className="text-sm text-slate-500 hover:text-slate-700"
-        >
-          ← Back to Event
-        </Link>
-        <h1 className="text-2xl font-bold text-slate-900 mt-1">
-          Reservations: {event?.title ?? "Event"}
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          {event ? formatDate(event.event_date) : "Loading event..."}
-        </p>
-      </div>
-
+    <section id="event-reservations" className="scroll-mt-8 mt-6">
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-2.5 mb-4">
           {error}
@@ -195,7 +175,7 @@ export default function EventSignupsPage() {
         <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="font-semibold text-slate-900">Submissions</h2>
+              <h2 className="font-semibold text-slate-900">Reservations</h2>
               {event && (
                 <p className="text-sm text-slate-500">
                   {event.reserved_count} reserved
@@ -342,6 +322,6 @@ export default function EventSignupsPage() {
           </form>
         </section>
       </div>
-    </>
+    </section>
   );
 }

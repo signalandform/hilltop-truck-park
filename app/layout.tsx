@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { Bebas_Neue, Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         className={`${inter.variable} ${oswald.variable} ${bebas.variable} font-sans antialiased bg-htp-bg text-htp-ink`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );

@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  MarketsGalleryMarquee,
+  type MarketGallerySlide,
+} from "@/components/MarketsGalleryMarquee";
 import { supabase } from "@/lib/supabase";
 
 const EMPTY = {
@@ -54,10 +58,45 @@ const addOns = [
   "Mini Horses - $300 for 2 hours",
 ];
 
+type PartyGalleryContent = {
+  images?: { src?: unknown; alt?: unknown }[];
+};
+
+function buildPartyGallerySlides(
+  content: PartyGalleryContent | null,
+): MarketGallerySlide[] {
+  const images = Array.isArray(content?.images) ? content.images : [];
+  return images
+    .map((image) => {
+      const src = typeof image.src === "string" ? image.src.trim() : "";
+      const alt = typeof image.alt === "string" ? image.alt.trim() : "";
+      return src ? { src, alt: alt || "Hilltop Truck Park birthday party" } : null;
+    })
+    .filter((image): image is MarketGallerySlide => image !== null)
+    .slice(0, 14);
+}
+
 export default function BookYourPartyPage() {
   const [form, setForm] = useState(EMPTY);
+  const [partyGallerySlides, setPartyGallerySlides] = useState<MarketGallerySlide[]>([]);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    supabase
+      .from("cms_page_content")
+      .select("content")
+      .eq("page_slug", "book-your-party")
+      .eq("section_key", "gallery")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        setPartyGallerySlides(
+          buildPartyGallerySlides((data?.content as PartyGalleryContent | null) ?? null),
+        );
+      });
+  }, []);
 
   const update = (key: keyof typeof EMPTY, value: string | string[]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -158,6 +197,8 @@ export default function BookYourPartyPage() {
             houses.
           </p>
         </div>
+
+        <MarketsGalleryMarquee images={partyGallerySlides} />
 
         {status === "sent" ? (
           <div className="bg-green-50 border border-green-200 text-green-800 rounded-card p-8 max-w-2xl mx-auto">

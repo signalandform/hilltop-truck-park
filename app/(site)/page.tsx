@@ -166,6 +166,12 @@ export default async function HomePage() {
                 >
                   Contact Us
                 </Link>
+                <Link
+                  href="/#bar-menu"
+                  className="htp-btn-secondary htp-hero-cta-outline"
+                >
+                  Bar menu
+                </Link>
               </div>
               <SocialLinks
                 className="mt-6"
@@ -193,26 +199,6 @@ export default async function HomePage() {
               <HoursBottlecaps hours={hoursData?.hours ?? []} />
             </div>
           )}
-          <div className="mx-auto mt-16 max-w-6xl">
-            <h2 className="htp-section-heading mb-10">Bar Menu</h2>
-            <div className="grid gap-8">
-              {BAR_MENU_IMAGES.map((item) => (
-                <section
-                  key={item.src}
-                  className="rounded-card border border-white/10 bg-htp-navy p-4 shadow-md sm:p-6"
-                >
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    width={1600}
-                    height={1200}
-                    className="h-auto w-full rounded-[1rem] border border-white/15"
-                    sizes="(max-width: 768px) 100vw, 1152px"
-                  />
-                </section>
-              ))}
-            </div>
-          </div>
           {hasScheduleImages && (
             <div className="mx-auto mt-16 max-w-6xl">
               <div className="grid gap-10">
@@ -260,6 +246,29 @@ export default async function HomePage() {
               </div>
             </div>
           )}
+          <div
+            id="bar-menu"
+            className="mx-auto mt-16 max-w-6xl scroll-mt-28"
+          >
+            <h2 className="htp-section-heading mb-10">Bar Menu</h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
+              {BAR_MENU_IMAGES.map((item) => (
+                <section
+                  key={item.src}
+                  className="rounded-card border border-white/10 bg-htp-navy p-4 shadow-md sm:p-6"
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    width={1600}
+                    height={1200}
+                    className="h-auto w-full rounded-[1rem] border border-white/15"
+                    sizes="(max-width: 768px) 100vw, 576px"
+                  />
+                </section>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

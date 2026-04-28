@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BottlecapImageFrame } from "@/components/decor/BottlecapImageFrame";
-import {
-  foodTruckImageIsLogoAsset,
-  resolveFoodTruckImageUrl,
-} from "@/lib/food-truck-logos";
+import { resolveFoodTruckImageUrl } from "@/lib/food-truck-logos";
 import {
   getFoodTruckDisplayBlurb,
   getFoodTruckDisplayName,
@@ -70,7 +67,6 @@ export default async function OurFoodTrucksPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {trucks.map((truck) => {
             const imageSrc = resolveFoodTruckImageUrl(truck);
-            const logoStyle = imageSrc ? foodTruckImageIsLogoAsset(imageSrc) : false;
             const displayBlurb = getFoodTruckDisplayBlurb(truck.name, truck.blurb);
             return (
             <div
@@ -83,7 +79,6 @@ export default async function OurFoodTrucksPage() {
                     id={truck.id}
                     src={imageSrc}
                     alt=""
-                    logoStyle={logoStyle}
                   />
                 </div>
               )}

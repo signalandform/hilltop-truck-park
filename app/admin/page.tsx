@@ -12,6 +12,7 @@ type Counts = {
   schedules: number;
   pages: number;
   contacts: number;
+  parties: number;
   vendors: number;
 };
 
@@ -26,16 +27,27 @@ const CONTENT_CARDS = [
 
 const INBOX_CARDS = [
   { key: "contacts" as const, label: "Contact Messages", href: "/admin/contacts", description: "View contact form submissions" },
+  { key: "parties" as const, label: "Party Inquiries", href: "/admin/parties", description: "View birthday party inquiries" },
   { key: "vendors" as const, label: "Vendor Requests", href: "/admin/vendors", description: "View vendor space requests" },
 ];
 
 export default function AdminDashboard() {
-  const [counts, setCounts] = useState<Counts>({ blog: 0, events: 0, markets: 0, trucks: 0, schedules: 0, pages: 0, contacts: 0, vendors: 0 });
-  const [unread, setUnread] = useState({ contacts: 0, vendors: 0 });
+  const [counts, setCounts] = useState<Counts>({
+    blog: 0,
+    events: 0,
+    markets: 0,
+    trucks: 0,
+    schedules: 0,
+    pages: 0,
+    contacts: 0,
+    parties: 0,
+    vendors: 0,
+  });
+  const [unread, setUnread] = useState({ contacts: 0, parties: 0, vendors: 0 });
 
   useEffect(() => {
     async function load() {
-      const [b, e, m, t, s, p, c, v, cu, vu] = await Promise.all([
+      const [b, e, m, t, s, p, c, pi, v, cu, piu, vu] = await Promise.all([
         supabase.from("cms_blog_posts").select("id", { count: "exact", head: true }),
         supabase.from("cms_events").select("id", { count: "exact", head: true }),
         supabase.from("cms_markets").select("id", { count: "exact", head: true }),
@@ -43,8 +55,10 @@ export default function AdminDashboard() {
         supabase.from("cms_page_content").select("id", { count: "exact", head: true }).eq("page_slug", "home").eq("section_key", "schedules"),
         supabase.from("cms_page_content").select("id", { count: "exact", head: true }),
         supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("cms_party_inquiries").select("id", { count: "exact", head: true }),
         supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }),
         supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
+        supabase.from("cms_party_inquiries").select("id", { count: "exact", head: true }).eq("is_read", false),
         supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
       ]);
       setCounts({
@@ -55,10 +69,12 @@ export default function AdminDashboard() {
         schedules: s.count ?? 0,
         pages: p.count ?? 0,
         contacts: c.count ?? 0,
+        parties: pi.count ?? 0,
         vendors: v.count ?? 0,
       });
       setUnread({
         contacts: cu.count ?? 0,
+        parties: piu.count ?? 0,
         vendors: vu.count ?? 0,
       });
     }

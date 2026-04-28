@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/admin/schedules", label: "Schedules", icon: "▣" },
   { href: "/admin/pages", label: "Page Content", icon: "☰" },
   { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
+  { href: "/admin/parties", label: "Party Inquiries", icon: "◎" },
   { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },
 ];
 

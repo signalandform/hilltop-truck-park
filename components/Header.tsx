@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/events", label: "Events" },
   { href: "/markets", label: "Markets" },
   { href: "/our-food-trucks", label: "Our Food Trucks" },
+  { href: "/book-your-party", label: "Book Your Party!" },
   { href: "/photo-fun", label: "Photo Fun!" },
   { href: "/vendor-requests", label: "Vendor Requests" },
   { href: "/contact-us", label: "Contact" },

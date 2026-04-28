@@ -5,14 +5,13 @@ type Props = {
   src: string;
   alt?: string;
   id: string;
-  logoStyle?: boolean;
 };
 
 function toSvgSafeId(value: string) {
   return value.replace(/[^a-zA-Z0-9_-]/g, "-");
 }
 
-export function BottlecapImageFrame({ src, alt = "", id, logoStyle = false }: Props) {
+export function BottlecapImageFrame({ src, alt = "", id }: Props) {
   const safeId = toSvgSafeId(id);
   const gradientId = `htp-bottlecap-image-fill-${safeId}`;
   const clipId = `htp-bottlecap-image-clip-${safeId}`;
@@ -46,7 +45,7 @@ export function BottlecapImageFrame({ src, alt = "", id, logoStyle = false }: Pr
           src={src}
           alt={alt}
           fill
-          className={logoStyle ? "object-contain p-4" : "object-cover"}
+          className="scale-110 object-cover"
           sizes="(max-width: 640px) 192px, 208px"
         />
       </div>

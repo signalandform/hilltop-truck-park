@@ -7,6 +7,18 @@ import { SocialLinks } from "@/components/SocialLinks";
 
 export const revalidate = CMS_REVALIDATE;
 
+/** Full bar menu + weekly happy hour graphics (public/images/photo-fun). */
+const BAR_MENU_IMAGES: { src: string; alt: string }[] = [
+  {
+    src: "/images/photo-fun/51d5cc_bd5a2b5477ff44a4bf8aaee9da8e3faa_mv2.png",
+    alt: "Hilltop Truck Park bar menu — cocktails, beer, wine, spirits, and more",
+  },
+  {
+    src: "/images/photo-fun/51d5cc_01aaccfac19942b18ef20292a2a927df_mv2.png",
+    alt: "Hilltop Hangout happy hour — weekly drink specials",
+  },
+];
+
 type HeroContent = {
   heading: string;
   tagline: string;
@@ -181,6 +193,26 @@ export default async function HomePage() {
               <HoursBottlecaps hours={hoursData?.hours ?? []} />
             </div>
           )}
+          <div className="mx-auto mt-16 max-w-6xl">
+            <h2 className="htp-section-heading mb-10">Bar Menu</h2>
+            <div className="grid gap-8">
+              {BAR_MENU_IMAGES.map((item) => (
+                <section
+                  key={item.src}
+                  className="rounded-card border border-white/10 bg-htp-navy p-4 shadow-md sm:p-6"
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    width={1600}
+                    height={1200}
+                    className="h-auto w-full rounded-[1rem] border border-white/15"
+                    sizes="(max-width: 768px) 100vw, 1152px"
+                  />
+                </section>
+              ))}
+            </div>
+          </div>
           {hasScheduleImages && (
             <div className="mx-auto mt-16 max-w-6xl">
               <div className="grid gap-10">

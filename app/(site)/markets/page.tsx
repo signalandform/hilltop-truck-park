@@ -117,8 +117,8 @@ export default async function MarketsPage() {
                 </h3>
                 <ul className="list-disc pl-5 space-y-1">
                   <li>
-                    <strong className="font-medium text-htp-navy">Twilight Market:</strong> Saturdays,
-                    5:00–9:00 PM
+                    <strong className="font-medium text-htp-navy">Twilight Market:</strong> Every
+                    other Saturday, 5:00–9:00 PM
                   </li>
                   <li>
                     <strong className="font-medium text-htp-navy">Farmers Market:</strong> Sundays,
@@ -210,7 +210,13 @@ export default async function MarketsPage() {
                 <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   On-Site Rules
                 </h3>
-                <p className="font-medium text-htp-navy">Do not drive on the turf.</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li className="font-medium text-htp-navy">Do not drive in the park.</li>
+                  <li>
+                    Vendors are welcome to stay set up later on Sundays, as Sundays typically
+                    have a crowd.
+                  </li>
+                </ul>
               </section>
             </div>
           </div>

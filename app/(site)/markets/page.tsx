@@ -101,18 +101,18 @@ export default async function MarketsPage() {
           Market Sign-Ups
         </h1>
 
-        <div className="mb-14 max-w-3xl mx-auto text-left">
-          <div className="htp-card-highlight p-6 sm:p-8">
+        <div className="mb-10 max-w-2xl mx-auto text-left">
+          <div className="htp-card-highlight p-5 sm:p-6">
             <p className="font-accent text-sm uppercase tracking-[0.12em] text-htp-red mb-2">
               Hilltop Truck Park
             </p>
-            <h2 className="font-display text-htp-h2 md:text-3xl text-htp-navy uppercase tracking-[0.04em] mb-8">
+            <h2 className="font-display text-2xl md:text-[1.75rem] leading-tight text-htp-navy uppercase tracking-[0.04em] mb-5">
               Farmers / Twilight Market Vendor Information
             </h2>
 
-            <div className="space-y-8 text-htp-ink leading-[1.55]">
+            <div className="space-y-5 text-sm text-htp-ink leading-[1.5]">
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Market Hours
                 </h3>
                 <ul className="list-disc pl-5 space-y-1">
@@ -128,14 +128,14 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Location
                 </h3>
                 <p>8150 Thompson Rd, Northlake, TX 76247</p>
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Registration &amp; Fees
                 </h3>
                 <p className="mb-3">
@@ -155,7 +155,7 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Setup Requirements
                 </h3>
                 <p className="mb-3">
@@ -169,7 +169,7 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Setup Times
                 </h3>
                 <ul className="list-disc pl-5 space-y-1">
@@ -185,7 +185,7 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Vendor Categories
                 </h3>
                 <p>
@@ -196,7 +196,7 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   Spot Assignments
                 </h3>
                 <p>
@@ -207,7 +207,7 @@ export default async function MarketsPage() {
               </section>
 
               <section>
-                <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-3">
+                <h3 className="font-display text-base text-htp-navy uppercase tracking-[0.04em] mb-2">
                   On-Site Rules
                 </h3>
                 <p className="font-medium text-htp-navy">Do not drive on the turf.</p>

@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  getUpcomingEvents,
-  getPastEvents,
-  CMS_REVALIDATE,
-  type CmsEvent,
-} from "@/lib/cms";
+import { getUpcomingEvents, CMS_REVALIDATE, type CmsEvent } from "@/lib/cms";
 import { Badge } from "@/components/ui/Badge";
 
 export const revalidate = CMS_REVALIDATE;
@@ -17,20 +12,16 @@ export const metadata: Metadata = {
     "Ticketed events, paint classes, raffles, and more at Hilltop Truck Park in Northlake, TX.",
 };
 
-function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean }) {
+function EventCard({ event }: { event: CmsEvent }) {
   return (
-    <article
-      className={`htp-card overflow-hidden flex flex-col text-left ${
-        past ? "opacity-75" : ""
-      }`}
-    >
+    <article className="htp-card overflow-hidden flex flex-col text-left">
       {event.image_url && (
-        <div className="relative w-full aspect-[4/5] bg-htp-navy/5">
+        <div className="relative w-full aspect-[4/3] bg-htp-navy/5">
           <Image
             src={event.image_url}
             alt={event.title}
             fill
-            className="object-contain p-3"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </div>
@@ -56,7 +47,7 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
         {event.price && (
           <p className="text-sm font-medium text-htp-navy mb-4">{event.price}</p>
         )}
-        {!past && event.cta_href ? (
+        {event.cta_href ? (
           <a
             href={event.cta_href}
             target={event.cta_href.startsWith("http") ? "_blank" : undefined}
@@ -67,7 +58,7 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
           </a>
         ) : (
           <span className="inline-block self-start rounded-btn border border-htp-line px-4 py-2 text-sm font-medium text-htp-ink/60">
-            {past ? "Past Event" : event.cta_label || "Learn More"}
+            {event.cta_label || "Learn More"}
           </span>
         )}
       </div>
@@ -76,10 +67,7 @@ function EventCard({ event, past = false }: { event: CmsEvent; past?: boolean })
 }
 
 export default async function EventsPage() {
-  const [upcoming, past] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents(),
-  ]);
+  const upcoming = await getUpcomingEvents();
 
   return (
     <section className="py-24 px-4">
@@ -116,19 +104,6 @@ export default async function EventsPage() {
               check back soon!
             </p>
           </div>
-        )}
-
-        {past.length > 0 && (
-          <>
-            <h2 className="font-display text-htp-h3 text-htp-navy/60 uppercase tracking-[0.04em] mb-6">
-              Past Events
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {past.map((event) => (
-                <EventCard key={event.id} event={event} past />
-              ))}
-            </div>
-          </>
         )}
 
         <div className="htp-card-highlight mx-auto mt-20 max-w-2xl p-8">

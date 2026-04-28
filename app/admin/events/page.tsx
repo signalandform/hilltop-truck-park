@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -60,6 +61,7 @@ export default function AdminEventsList() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
+                <th className="text-left px-4 py-3 font-medium text-slate-600">Image</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Date</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Title</th>
                 <th className="text-left px-4 py-3 font-medium text-slate-600">Tag</th>
@@ -77,6 +79,21 @@ export default function AdminEventsList() {
                     className={`border-b border-slate-100 hover:bg-slate-50 cursor-pointer ${isPast ? "opacity-50" : ""}`}
                     onClick={() => router.push(`/admin/events/${event.id}`)}
                   >
+                    <td className="px-4 py-3">
+                      {event.image_url ? (
+                        <div className="relative h-14 w-14 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                          <Image
+                            src={event.image_url}
+                            alt=""
+                            fill
+                            className="object-cover"
+                            sizes="56px"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400">No image</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-slate-700 whitespace-nowrap">{formatDate(event.event_date)}</td>
                     <td className="px-4 py-3 font-medium text-slate-900">{event.title}</td>
                     <td className="px-4 py-3 text-slate-500">{event.tag ?? "—"}</td>

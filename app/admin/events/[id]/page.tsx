@@ -256,8 +256,8 @@ export default function EventEditor() {
           value={form.image_url}
           onChange={(url) => update("image_url", url)}
           folder="events"
-          label="Event Image"
-          helpText="Recommended: vertical flyer/poster artwork. Public event cards display images in a consistent 4:5 frame."
+          label="Event Thumbnail"
+          helpText="Upload the image shown on active event cards. Square or landscape artwork works best for thumbnails."
         />
 
         <div>

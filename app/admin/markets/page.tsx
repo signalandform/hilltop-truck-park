@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -18,6 +18,15 @@ type GalleryContentRow = {
     images?: unknown;
   } | null;
 };
+
+type GalleryUpload = {
+  id: string;
+  name: string;
+  status: "uploading" | "done" | "error";
+  error?: string;
+};
+
+const MAX_GALLERY_FILE_BYTES = 10 * 1024 * 1024;
 
 function newGalleryItem(src = "", alt = ""): GalleryItem {
   return {
@@ -41,6 +50,14 @@ function parseGalleryItems(content: GalleryContentRow["content"]): GalleryItem[]
     .filter((item): item is GalleryItem => item !== null);
 }
 
+function altTextFromFileName(fileName: string) {
+  return fileName
+    .replace(/\.[^.]+$/, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default function AdminMarketsList() {
   const [markets, setMarkets] = useState<CmsMarket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +67,10 @@ export default function AdminMarketsList() {
   const [gallerySaving, setGallerySaving] = useState(false);
   const [galleryMessage, setGalleryMessage] = useState("");
   const [galleryError, setGalleryError] = useState("");
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [galleryDragActive, setGalleryDragActive] = useState(false);
+  const [galleryUploads, setGalleryUploads] = useState<GalleryUpload[]>([]);
+  const galleryFileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -109,12 +130,15 @@ export default function AdminMarketsList() {
     setGalleryMessage("");
   };
 
-  const saveGallery = async () => {
+  const saveGalleryItems = async (
+    items: GalleryItem[],
+    successMessage = "Markets gallery saved.",
+  ) => {
     setGallerySaving(true);
     setGalleryError("");
     setGalleryMessage("");
 
-    const images = galleryItems
+    const images = items
       .map((item) => ({
         src: item.src.trim(),
         alt: item.alt.trim(),
@@ -153,8 +177,101 @@ export default function AdminMarketsList() {
     }
 
     setGalleryItems(images.map((item) => newGalleryItem(item.src, item.alt)));
-    setGalleryMessage("Markets gallery saved.");
+    setGalleryMessage(successMessage);
     setGallerySaving(false);
+    return true;
+  };
+
+  const saveGallery = async () => {
+    await saveGalleryItems(galleryItems);
+  };
+
+  const uploadGalleryFiles = async (files: FileList | File[]) => {
+    const selectedFiles = Array.from(files);
+    if (selectedFiles.length === 0) return;
+
+    const uploads = selectedFiles.map<GalleryUpload>((file) => {
+      if (!file.type.startsWith("image/")) {
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          status: "error",
+          error: "Not an image",
+        };
+      }
+      if (file.size > MAX_GALLERY_FILE_BYTES) {
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          status: "error",
+          error: "File must be under 10 MB",
+        };
+      }
+      return {
+        id: crypto.randomUUID(),
+        name: file.name,
+        status: "uploading",
+      };
+    });
+
+    setGalleryError("");
+    setGalleryMessage("");
+    setGalleryUploads(uploads);
+
+    const uploadableFiles = selectedFiles
+      .map((file, index) => ({ file, upload: uploads[index] }))
+      .filter(({ upload }) => upload.status === "uploading");
+
+    if (uploadableFiles.length === 0) {
+      if (galleryFileInputRef.current) galleryFileInputRef.current.value = "";
+      return;
+    }
+
+    setGalleryUploading(true);
+
+    const uploadedItems: GalleryItem[] = [];
+    for (const { file, upload } of uploadableFiles) {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `markets-gallery/${crypto.randomUUID()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("cms-images")
+        .upload(path, file, { upsert: false, contentType: file.type });
+
+      if (uploadError) {
+        setGalleryUploads((prev) =>
+          prev.map((item) =>
+            item.id === upload.id
+              ? { ...item, status: "error", error: uploadError.message }
+              : item,
+          ),
+        );
+        continue;
+      }
+
+      const { data } = supabase.storage.from("cms-images").getPublicUrl(path);
+      uploadedItems.push(
+        newGalleryItem(data.publicUrl, altTextFromFileName(file.name)),
+      );
+      setGalleryUploads((prev) =>
+        prev.map((item) =>
+          item.id === upload.id ? { ...item, status: "done" } : item,
+        ),
+      );
+    }
+
+    if (uploadedItems.length > 0) {
+      await saveGalleryItems(
+        [...galleryItems, ...uploadedItems],
+        `${uploadedItems.length} image${
+          uploadedItems.length === 1 ? "" : "s"
+        } uploaded and saved.`,
+      );
+    }
+
+    setGalleryUploading(false);
+    setGalleryDragActive(false);
+    if (galleryFileInputRef.current) galleryFileInputRef.current.value = "";
   };
 
   return (
@@ -215,6 +332,83 @@ export default function AdminMarketsList() {
           <p className="mt-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
             {galleryMessage}
           </p>
+        )}
+
+        <div
+          className={`mt-5 rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
+            galleryDragActive
+              ? "border-blue-400 bg-blue-50"
+              : "border-slate-300 bg-slate-50"
+          }`}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setGalleryDragActive(true);
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setGalleryDragActive(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            if (e.currentTarget === e.target) setGalleryDragActive(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            setGalleryDragActive(false);
+            uploadGalleryFiles(e.dataTransfer.files);
+          }}
+        >
+          <input
+            ref={galleryFileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files) uploadGalleryFiles(e.target.files);
+            }}
+          />
+          <p className="text-sm font-medium text-slate-800">
+            Drag and drop market gallery photos here
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            Or choose files to upload. Images are saved to Supabase storage and added to this
+            gallery automatically.
+          </p>
+          <button
+            type="button"
+            onClick={() => galleryFileInputRef.current?.click()}
+            disabled={galleryUploading || gallerySaving || galleryLoading}
+            className="mt-3 rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 disabled:opacity-50"
+          >
+            {galleryUploading ? "Uploading..." : "Choose Images"}
+          </button>
+        </div>
+
+        {galleryUploads.length > 0 && (
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {galleryUploads.map((upload) => (
+              <li
+                key={upload.id}
+                className={`rounded-lg border px-3 py-2 text-xs ${
+                  upload.status === "error"
+                    ? "border-red-200 bg-red-50 text-red-700"
+                    : upload.status === "done"
+                      ? "border-green-200 bg-green-50 text-green-700"
+                      : "border-blue-200 bg-blue-50 text-blue-700"
+                }`}
+              >
+                <span className="block truncate font-medium">{upload.name}</span>
+                <span>
+                  {upload.status === "uploading"
+                    ? "Uploading..."
+                    : upload.status === "done"
+                      ? "Uploaded"
+                      : upload.error}
+                </span>
+              </li>
+            ))}
+          </ul>
         )}
 
         {galleryLoading ? (

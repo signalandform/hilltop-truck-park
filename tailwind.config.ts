@@ -46,6 +46,15 @@ const config: Config = {
         ],
         "htp-h3": ["1.5rem", { lineHeight: "1.2" }],
       },
+      keyframes: {
+        "htp-marquee": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        "htp-marquee": "htp-marquee 85s linear infinite",
+      },
     },
   },
   plugins: [],

@@ -1,3 +1,5 @@
+import { normalizeFoodTruckName } from "./food-truck-overrides";
+
 /** Default logo URLs sourced from hilltoptruckpark.com resident trucks (Wix CDN). Used when CMS has no image. */
 const FALLBACK_BY_NORMALIZED_NAME: Record<string, string> = {
   "indian creek bbq":
@@ -7,6 +9,8 @@ const FALLBACK_BY_NORMALIZED_NAME: Record<string, string> = {
   "el villa mexican food":
     "https://static.wixstatic.com/media/cdd0d9_0d08f05fa3594331b0acb0229a7a4d51~mv2.jpg/v1/fit/w_480,h_479,q_90,enc_avif,quality_auto/cdd0d9_0d08f05fa3594331b0acb0229a7a4d51~mv2.jpg",
   "fryer and ice":
+    "https://static.wixstatic.com/media/cdd0d9_090b88b56f9a4bd7b2b512d6065808e1~mv2.jpg/v1/fit/w_480,h_480,q_90,enc_avif,quality_auto/cdd0d9_090b88b56f9a4bd7b2b512d6065808e1~mv2.jpg",
+  "ice ice baby":
     "https://static.wixstatic.com/media/cdd0d9_090b88b56f9a4bd7b2b512d6065808e1~mv2.jpg/v1/fit/w_480,h_480,q_90,enc_avif,quality_auto/cdd0d9_090b88b56f9a4bd7b2b512d6065808e1~mv2.jpg",
   "sauce'd":
     "https://static.wixstatic.com/media/51d5cc_74d500c9cd354281ae3e71fe92b739f5~mv2.jpg/v1/fit/w_480,h_479,q_90,enc_avif,quality_auto/51d5cc_74d500c9cd354281ae3e71fe92b739f5~mv2.jpg",
@@ -21,10 +25,6 @@ const FALLBACK_BY_NORMALIZED_NAME: Record<string, string> = {
   "chixn wangz":
     "https://static.wixstatic.com/media/51d5cc_f1233f4a75e341a2908e2a7d1032037c~mv2.jpg/v1/fit/w_480,h_479,q_90,enc_avif,quality_auto/51d5cc_f1233f4a75e341a2908e2a7d1032037c~mv2.jpg",
 };
-
-function normalizeFoodTruckName(name: string): string {
-  return name.trim().toLowerCase().replace(/\s+/g, " ");
-}
 
 export function resolveFoodTruckImageUrl(truck: {
   name: string;

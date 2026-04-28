@@ -5,13 +5,18 @@ import {
   foodTruckImageIsLogoAsset,
   resolveFoodTruckImageUrl,
 } from "@/lib/food-truck-logos";
+import {
+  getFoodTruckDisplayBlurb,
+  getFoodTruckDisplayName,
+} from "@/lib/food-truck-overrides";
 import { getFoodTrucks, CMS_REVALIDATE } from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
 
 export const metadata: Metadata = {
   title: "Our Food Trucks | Hilltop Truck Park",
-  description: "Discover the rotating lineup of food trucks at Hilltop Truck Park in Northlake, TX.",
+  description:
+    "Ten permanent food trucks open daily at Hilltop Truck Park in Northlake, TX, plus visiting trucks and markets.",
 };
 
 export default async function OurFoodTrucksPage() {
@@ -25,8 +30,8 @@ export default async function OurFoodTrucksPage() {
         </h1>
         <div className="space-y-6 text-htp-ink leading-[1.55] mb-12">
           <p className="text-lg max-w-2xl mx-auto">
-            Hilltop Truck Park features a rotating lineup of local food trucks, bringing variety and
-            great eats to Northlake, TX every week.
+            Hilltop Truck Park features 10 permanent trucks that are open daily, as well as a
+            rotating lineup of visiting trucks to keep things fresh and interesting.
           </p>
           <p>
             Our schedule changes regularly, so check our{" "}
@@ -66,6 +71,7 @@ export default async function OurFoodTrucksPage() {
           {trucks.map((truck) => {
             const imageSrc = resolveFoodTruckImageUrl(truck);
             const logoStyle = imageSrc ? foodTruckImageIsLogoAsset(imageSrc) : false;
+            const displayBlurb = getFoodTruckDisplayBlurb(truck.name, truck.blurb);
             return (
             <div
               key={truck.id}
@@ -87,11 +93,11 @@ export default async function OurFoodTrucksPage() {
               )}
               <div className="p-6">
                 <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-1">
-                  {truck.name}
+                  {getFoodTruckDisplayName(truck.name)}
                 </h3>
                 <p className="text-sm text-htp-red mb-3">{truck.cuisine}</p>
-                {truck.blurb && (
-                  <p className="text-htp-ink text-sm leading-[1.55]">{truck.blurb}</p>
+                {displayBlurb && (
+                  <p className="text-htp-ink text-sm leading-[1.55]">{displayBlurb}</p>
                 )}
               </div>
             </div>

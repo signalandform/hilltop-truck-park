@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getUpcomingMarkets, getPastMarkets, CMS_REVALIDATE } from "@/lib/cms";
+import { MarketsGalleryMarquee, type MarketGallerySlide } from "@/components/MarketsGalleryMarquee";
+import {
+  getUpcomingMarkets,
+  getGalleryPhotos,
+  CMS_REVALIDATE,
+  type GalleryPhoto,
+} from "@/lib/cms";
 
 export const revalidate = CMS_REVALIDATE;
 
@@ -21,11 +27,51 @@ function formatDate(dateStr: string | null) {
   });
 }
 
+/** Local photos used to pad the marquee when the CMS gallery has few images. */
+const MARKET_GALLERY_FALLBACK_SRCS = [
+  "/images/photo-fun/51d5cc_726edf8198ac4150bc38f6f8ff9b1bab_mv2.jpeg",
+  "/images/photo-fun/51d5cc_afcf3b951e9a40608d78dbc9d69f2887_mv2.jpeg",
+  "/images/photo-fun/51d5cc_0537c9933c1e4addb6834ea30d3a66b1_mv2.jpeg",
+  "/images/photo-fun/51d5cc_5a71b62c35b64391b5f542f9065018ef_mv2.jpeg",
+  "/images/photo-fun/51d5cc_8500e7ed553b4bc2bc31395ed1d48361_mv2.jpg",
+  "/images/photo-fun/51d5cc_b2fc845f3661414281da3072ba73185e_mv2.jpg",
+  "/images/photo-fun/51d5cc_b6820355573b4d9f93fe2abadf2e8a39_mv2.jpg",
+  "/images/photo-fun/51d5cc_c65e42edd1e14da3b19625ea6ba79e44_mv2.jpg",
+  "/images/photo-fun/51d5cc_cc1ae1773a534e68a8689b4ca71cdb0c_mv2.jpg",
+  "/images/photo-fun/51d5cc_d2bad7e356ef45f5921adc6050cf568c_mv2.jpeg",
+];
+
+const MARKET_GALLERY_MAX_SLIDES = 14;
+
+function buildMarketGallerySlides(photos: GalleryPhoto[]): MarketGallerySlide[] {
+  const seen = new Set<string>();
+  const out: MarketGallerySlide[] = [];
+  for (const p of photos) {
+    if (out.length >= MARKET_GALLERY_MAX_SLIDES) break;
+    const src = p.image_url?.trim();
+    if (!src || seen.has(src)) continue;
+    seen.add(src);
+    out.push({
+      src,
+      alt: p.alt_text?.trim() || "Hilltop Truck Park",
+    });
+  }
+  for (const src of MARKET_GALLERY_FALLBACK_SRCS) {
+    if (out.length >= MARKET_GALLERY_MAX_SLIDES) break;
+    if (!seen.has(src)) {
+      seen.add(src);
+      out.push({ src, alt: "Hilltop Truck Park" });
+    }
+  }
+  return out;
+}
+
 export default async function MarketsPage() {
-  const [upcoming, past] = await Promise.all([
+  const [upcoming, galleryPhotos] = await Promise.all([
     getUpcomingMarkets(),
-    getPastMarkets(),
+    getGalleryPhotos(),
   ]);
+  const marketGallerySlides = buildMarketGallerySlides(galleryPhotos);
 
   return (
     <section className="py-24 px-4">
@@ -149,6 +195,8 @@ export default async function MarketsPage() {
           </div>
         </div>
 
+        <MarketsGalleryMarquee images={marketGallerySlides} />
+
         <p className="text-lg text-htp-ink leading-[1.55] mb-12 max-w-2xl mx-auto">
           Join us at our farmers markets and twilight markets as a vendor or shopper. Sign up
           below for upcoming markets at Hilltop Truck Park.
@@ -207,32 +255,6 @@ export default async function MarketsPage() {
               check back soon!
             </p>
           </div>
-        )}
-
-        {past.length > 0 && (
-          <>
-            <h2 className="font-display text-htp-h3 text-htp-navy/60 uppercase tracking-[0.04em] mb-6">
-              Past Markets
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 opacity-70">
-              {past.map((market) => (
-                <Link
-                  key={market.slug}
-                  href={`/markets/${market.slug}`}
-                  className="bg-htp-cream border border-htp-line rounded-card shadow-sm p-4 hover:border-htp-line/80 transition-colors block text-left"
-                >
-                  {market.event_date && (
-                    <p className="text-xs text-htp-ink/50 mb-1">
-                      {formatDate(market.event_date)}
-                    </p>
-                  )}
-                  <h3 className="font-display text-sm text-htp-navy uppercase tracking-[0.04em]">
-                    {market.title}
-                  </h3>
-                </Link>
-              ))}
-            </div>
-          </>
         )}
       </div>
     </section>

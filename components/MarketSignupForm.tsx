@@ -79,7 +79,7 @@ export function MarketSignupForm({
 
   if (status === "sent") {
     return (
-      <div className="bg-green-50 border border-green-200 text-green-800 rounded-card p-6 mt-8">
+      <div className="bg-htp-cream border border-htp-line text-htp-ink rounded-card p-6 mt-8">
         <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-2">
           You&apos;re Signed Up!
         </h3>
@@ -102,7 +102,7 @@ export function MarketSignupForm({
 
   if (allSoldOut) {
     return (
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-card p-6 mt-8">
+      <div className="bg-htp-cream-2 border border-htp-line text-htp-ink rounded-card p-6 mt-8">
         <h3 className="font-display text-lg text-htp-navy uppercase tracking-[0.04em] mb-2">
           This Market is Sold Out
         </h3>

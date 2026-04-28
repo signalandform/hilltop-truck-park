@@ -9,7 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        "htp-black": "var(--htp-black)",
+        "htp-white": "var(--htp-white)",
         "htp-red": "var(--htp-red)",
+        "htp-gray": "var(--htp-gray)",
+        "htp-gray-light": "var(--htp-gray-light)",
+        "htp-gray-mid": "var(--htp-gray-mid)",
         "htp-navy": "var(--htp-navy)",
         "htp-ink": "var(--htp-ink)",
         "htp-bg": "var(--htp-bg)",

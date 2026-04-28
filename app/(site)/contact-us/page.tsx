@@ -69,7 +69,7 @@ export default function ContactUsPage() {
         </div>
 
         {status === "sent" ? (
-          <div className="bg-green-50 border border-green-200 text-green-800 rounded-card p-8 max-w-xl mx-auto">
+          <div className="bg-htp-cream border border-htp-line text-htp-ink rounded-card p-8 max-w-xl mx-auto">
             <h3 className="font-display text-htp-h3 text-htp-navy uppercase tracking-[0.04em] mb-2">
               Message Sent!
             </h3>

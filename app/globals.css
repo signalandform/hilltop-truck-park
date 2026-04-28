@@ -3,17 +3,22 @@
 @tailwind utilities;
 
 :root {
+  --htp-black: #080808;
+  --htp-white: #ffffff;
   --htp-red: #C73A34;
-  --htp-navy: #2E3F52;
-  --htp-ink: #1F2328;
-  --htp-bg: #F6F1EC;
-  --htp-cream: #FBF7F3;
-  --htp-cream-2: #F3ede4;
-  --htp-line: #D8D0C8;
-  --htp-success: #1E7A5A;
-  --htp-warning: #B7791F;
+  --htp-gray: #6A6A6A;
+  --htp-gray-light: #F4F4F4;
+  --htp-gray-mid: #E6E6E6;
+  --htp-navy: var(--htp-black);
+  --htp-ink: #171717;
+  --htp-bg: var(--htp-white);
+  --htp-cream: var(--htp-gray-light);
+  --htp-cream-2: var(--htp-gray-mid);
+  --htp-line: #D5D5D5;
+  --htp-success: var(--htp-gray);
+  --htp-warning: var(--htp-gray);
   --htp-danger: #B3261E;
-  --htp-navy-footer: #242f3d;
+  --htp-navy-footer: #050505;
   --radius-btn: 12px;
   --radius-card: 16px;
   /* Subtle paper grain (repeating SVG noise) */
@@ -25,7 +30,7 @@ body {
   background-color: var(--htp-bg);
   background-image:
     radial-gradient(ellipse 100% 70% at 50% 0%, rgba(199, 58, 52, 0.055) 0%, transparent 52%),
-    linear-gradient(180deg, #f6f1ec 0%, #f0e9e0 100%);
+    linear-gradient(180deg, #ffffff 0%, #f1f1f1 100%);
   position: relative;
 }
 
@@ -47,7 +52,7 @@ body::before {
 
   .htp-surface-alt {
     @apply relative z-[1];
-    background-color: color-mix(in srgb, #f3ede6 90%, var(--htp-bg));
+    background-color: color-mix(in srgb, var(--htp-gray-light) 90%, var(--htp-bg));
   }
 
   .htp-surface-cream {

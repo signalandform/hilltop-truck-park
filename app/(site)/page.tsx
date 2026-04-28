@@ -93,7 +93,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero — full-bleed photo, navy overlay, light text */}
+      {/* Hero — full-bleed photo, black overlay, light text */}
       <section className="htp-hero relative z-[1] flex min-h-[min(90vh,640px)] items-center justify-center overflow-hidden px-4 pb-32 pt-24 sm:pb-40 sm:pt-28">
         <div className="absolute inset-0 -z-10">
           <Image
@@ -108,7 +108,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-htp-navy/50" aria-hidden />
           {/* Darker in the center where the copy sits */}
           <div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_100%_88%_at_50%_40%,rgb(8_20_32_/_0.88),rgb(8_20_32_/_0.4)_55%,rgb(8_20_32_/_0.15)_100%)]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_100%_88%_at_50%_40%,rgb(0_0_0_/_0.88),rgb(0_0_0_/_0.42)_55%,rgb(0_0_0_/_0.16)_100%)]"
             aria-hidden
           />
           {/* Top/bottom: slightly darker for text + transition to next section */}

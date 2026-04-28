@@ -100,7 +100,9 @@ export default function AdminEventsList() {
                     <td className="px-4 py-3 text-slate-500">{event.tag ?? "—"}</td>
                     <td className="px-4 py-3 text-slate-500">{event.price ?? "—"}</td>
                     <td className="px-4 py-3 text-center text-slate-500">
-                      {event.capacity_limit ?? "Unlimited"}
+                      {event.capacity_limit !== null
+                        ? `${event.reserved_count}/${event.capacity_limit}`
+                        : `${event.reserved_count} / Unlimited`}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span
@@ -114,6 +116,13 @@ export default function AdminEventsList() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
+                      <Link
+                        href={`/admin/events/${event.id}/signups`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:text-blue-800 text-xs font-medium mr-3"
+                      >
+                        Reservations
+                      </Link>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDelete(event.id); }}
                         className="text-red-500 hover:text-red-700 text-xs font-medium"

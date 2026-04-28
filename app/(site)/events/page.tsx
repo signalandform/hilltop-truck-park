@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getUpcomingEvents, CMS_REVALIDATE, type CmsEvent } from "@/lib/cms";
+import { EventSignupForm } from "@/components/EventSignupForm";
 import { Badge } from "@/components/ui/Badge";
 
 export const revalidate = CMS_REVALIDATE;
@@ -49,8 +50,9 @@ function EventCard({ event }: { event: CmsEvent }) {
         )}
         {event.capacity_limit !== null && (
           <p className="text-xs font-medium uppercase tracking-[0.12em] text-htp-red mb-4">
-            Limited to {event.capacity_limit} spot
-            {event.capacity_limit !== 1 ? "s" : ""}
+            {Math.max(0, event.capacity_limit - event.reserved_count)} of{" "}
+            {event.capacity_limit} spot{event.capacity_limit !== 1 ? "s" : ""}{" "}
+            left
           </p>
         )}
         {event.cta_href ? (
@@ -67,6 +69,12 @@ function EventCard({ event }: { event: CmsEvent }) {
             {event.cta_label || "Learn More"}
           </span>
         )}
+        <EventSignupForm
+          eventId={event.id}
+          eventTitle={event.title}
+          capacityLimit={event.capacity_limit}
+          reservedCount={event.reserved_count}
+        />
       </div>
     </article>
   );

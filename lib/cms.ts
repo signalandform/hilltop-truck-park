@@ -59,10 +59,24 @@ export type CmsEvent = {
   tag: string | null;
   image_url: string | null;
   capacity_limit: number | null;
+  reserved_count: number;
   cta_label: string;
   cta_href: string;
   is_published: boolean;
   sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CmsEventSignup = {
+  id: string;
+  event_id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  party_size: number;
+  message: string | null;
+  source: "public" | "cms";
   created_at: string;
   updated_at: string;
 };

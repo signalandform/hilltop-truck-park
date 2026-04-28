@@ -21,6 +21,7 @@ type Form = {
   tag: string;
   image_url: string;
   capacity_limit: string;
+  reserved_count: number;
   cta_label: string;
   cta_href: string;
   sort_order: number;
@@ -38,6 +39,7 @@ const EMPTY: Form = {
   tag: "",
   image_url: "",
   capacity_limit: "",
+  reserved_count: 0,
   cta_label: "Buy Tickets",
   cta_href: "https://www.hilltoptruckpark.com/events-2",
   sort_order: 0,
@@ -77,6 +79,7 @@ export default function EventEditor() {
           tag: data.tag ?? "",
           image_url: data.image_url ?? "",
           capacity_limit: data.capacity_limit?.toString() ?? "",
+          reserved_count: data.reserved_count ?? 0,
           cta_label: data.cta_label ?? "Buy Tickets",
           cta_href: data.cta_href ?? "",
           sort_order: data.sort_order,
@@ -155,13 +158,24 @@ export default function EventEditor() {
             {isNew ? "New Event" : "Edit Event"}
           </h1>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-slate-800 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition-colors"
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
+        <div className="flex items-center gap-3">
+          {!isNew && (
+            <Link
+              href={`/admin/events/${id}/signups`}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              {form.reserved_count} reserved
+              {form.capacity_limit ? ` / ${form.capacity_limit}` : ""} →
+            </Link>
+          )}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="bg-slate-800 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
       </div>
 
       {error && (

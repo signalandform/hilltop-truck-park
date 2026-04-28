@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPageSections, CMS_REVALIDATE } from "@/lib/cms";
 import { SectionWave } from "@/components/decor/SectionWave";
+import { HoursBottlecaps } from "@/components/HoursBottlecaps";
 import { SocialLinks } from "@/components/SocialLinks";
 
 export const revalidate = CMS_REVALIDATE;
@@ -175,18 +176,11 @@ export default async function HomePage() {
           <h2 className="htp-section-heading mb-10">
             {hoursData?.heading ?? "When We\u2019re Pourin\u2019"}
           </h2>
-          <div className="htp-card max-w-2xl mx-auto p-8">
-            <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4 md:grid-cols-7">
-              {(hoursData?.hours ?? []).map(({ day, time }) => (
-                <div key={day}>
-                  <p className="font-display text-sm uppercase tracking-[0.04em] text-htp-navy">
-                    {day}
-                  </p>
-                  <p className="mt-1 text-sm text-htp-ink">{time}</p>
-                </div>
-              ))}
+          {(hoursData?.hours ?? []).length > 0 && (
+            <div className="htp-card mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+              <HoursBottlecaps hours={hoursData?.hours ?? []} />
             </div>
-          </div>
+          )}
           {hasScheduleImages && (
             <div className="mx-auto mt-16 max-w-6xl">
               <div className="grid gap-10">

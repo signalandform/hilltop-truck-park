@@ -157,7 +157,7 @@ export function EventSignupForm({
             </div>
             <div>
               <label className="block text-xs font-medium text-htp-ink mb-1">
-                Party Size *
+                Amount *
               </label>
               <input
                 type="number"

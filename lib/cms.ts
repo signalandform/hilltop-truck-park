@@ -256,6 +256,28 @@ export async function getUpcomingEvents(): Promise<CmsEvent[]> {
   return data ?? [];
 }
 
+export async function getEvent(slug: string): Promise<CmsEvent | null> {
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getEventSlugs(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("cms_events")
+    .select("slug")
+    .eq("is_published", true);
+
+  if (error) throw error;
+  return (data ?? []).map((r) => r.slug);
+}
+
 export async function getPastEvents(): Promise<CmsEvent[]> {
   const today = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase

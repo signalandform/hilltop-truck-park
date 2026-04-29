@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getUpcomingEvents, CMS_REVALIDATE, type CmsEvent } from "@/lib/cms";
-import { EventSignupForm } from "@/components/EventSignupForm";
 import { Badge } from "@/components/ui/Badge";
 
 export const revalidate = CMS_REVALIDATE;
@@ -55,26 +54,12 @@ function EventCard({ event }: { event: CmsEvent }) {
             left
           </p>
         )}
-        {event.cta_href ? (
-          <a
-            href={event.cta_href}
-            target={event.cta_href.startsWith("http") ? "_blank" : undefined}
-            rel={event.cta_href.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="htp-btn-primary !px-4 !py-2 self-start !text-sm"
-          >
-            {event.cta_label || "Learn More"}
-          </a>
-        ) : (
-          <span className="inline-block self-start rounded-btn border border-htp-line px-4 py-2 text-sm font-medium text-htp-ink/60">
-            {event.cta_label || "Learn More"}
-          </span>
-        )}
-        <EventSignupForm
-          eventId={event.id}
-          eventTitle={event.title}
-          capacityLimit={event.capacity_limit}
-          reservedCount={event.reserved_count}
-        />
+        <Link
+          href={`/events/${event.slug}`}
+          className="htp-btn-primary !px-4 !py-2 self-start !text-sm"
+        >
+          {event.cta_label || "Learn More"}
+        </Link>
       </div>
     </article>
   );

@@ -214,3 +214,100 @@ body::before {
     transform: translateY(0);
   }
 }
+
+/* CMS/admin palette overrides. Keeps existing CMS markup but maps it to the public site tokens. */
+.htp-admin {
+  color: var(--htp-ink);
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(199, 58, 52, 0.06) 0%, transparent 52%),
+    linear-gradient(180deg, var(--htp-bg) 0%, var(--htp-gray-light) 100%);
+}
+
+.htp-admin .bg-slate-100,
+.htp-admin .bg-slate-50,
+.htp-admin .bg-slate-50\/60 {
+  background-color: var(--htp-gray-light);
+}
+
+.htp-admin .bg-white {
+  background-color: var(--htp-bg);
+}
+
+.htp-admin .bg-slate-800,
+.htp-admin .hover\:bg-slate-700:hover {
+  background-color: var(--htp-navy);
+}
+
+.htp-admin .hover\:bg-slate-200:hover {
+  background-color: var(--htp-gray-mid);
+}
+
+.htp-admin .bg-blue-50,
+.htp-admin .bg-green-50,
+.htp-admin .bg-green-100,
+.htp-admin .bg-amber-100 {
+  background-color: var(--htp-gray-light);
+}
+
+.htp-admin .bg-red-50,
+.htp-admin .bg-red-100 {
+  background-color: color-mix(in srgb, var(--htp-red) 10%, var(--htp-bg));
+}
+
+.htp-admin .text-slate-900,
+.htp-admin .text-slate-800,
+.htp-admin .text-slate-700,
+.htp-admin .text-slate-600 {
+  color: var(--htp-navy);
+}
+
+.htp-admin .text-slate-500,
+.htp-admin .text-slate-400 {
+  color: var(--htp-gray);
+}
+
+.htp-admin .text-slate-300 {
+  color: var(--htp-gray-mid);
+}
+
+.htp-admin .text-blue-600,
+.htp-admin .hover\:text-blue-800:hover,
+.htp-admin .text-red-500,
+.htp-admin .hover\:text-red-700:hover,
+.htp-admin .text-red-600,
+.htp-admin .text-red-700 {
+  color: var(--htp-red);
+}
+
+.htp-admin .text-green-600,
+.htp-admin .text-green-700,
+.htp-admin .text-amber-700 {
+  color: var(--htp-gray);
+}
+
+.htp-admin .border-slate-100,
+.htp-admin .border-slate-200,
+.htp-admin .border-slate-300,
+.htp-admin .border-blue-200,
+.htp-admin .border-green-200,
+.htp-admin .border-red-200 {
+  border-color: var(--htp-line);
+}
+
+.htp-admin .border-white\/10 {
+  border-color: color-mix(in srgb, var(--htp-bg) 14%, transparent);
+}
+
+.htp-admin .focus\:ring-blue-500:focus,
+.htp-admin .focus\:ring-blue-500:focus-visible {
+  --tw-ring-color: var(--htp-red);
+}
+
+.htp-admin input::file-selector-button {
+  background-color: var(--htp-gray-light);
+  color: var(--htp-navy);
+}
+
+.htp-admin input::file-selector-button:hover {
+  background-color: var(--htp-gray-mid);
+}

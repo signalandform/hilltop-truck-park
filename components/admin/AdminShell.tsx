@@ -60,7 +60,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+    <div className="htp-admin min-h-screen flex items-center justify-center bg-slate-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm"
@@ -113,7 +113,7 @@ function LoginForm() {
 
 function NotAuthorized({ email, onLogout }: { email: string; onLogout: () => void }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+    <div className="htp-admin min-h-screen flex items-center justify-center bg-slate-100">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center">
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h1>
         <p className="text-slate-500 text-sm mb-1">
@@ -176,7 +176,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="htp-admin min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-slate-500 text-sm">Loading...</div>
       </div>
     );
@@ -186,7 +186,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (isCmsAdmin === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="htp-admin min-h-screen flex items-center justify-center bg-slate-100">
         <div className="text-slate-500 text-sm">Checking access...</div>
       </div>
     );
@@ -202,7 +202,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-100">
+    <div className="htp-admin min-h-screen flex bg-slate-100">
       {/* Sidebar */}
       <aside className="w-60 bg-slate-800 text-white flex flex-col shrink-0">
         <div className="px-5 py-5 border-b border-white/10">

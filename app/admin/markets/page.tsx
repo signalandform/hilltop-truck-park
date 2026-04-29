@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { CmsMarket } from "@/lib/cms";
 
+type MarketWithSignupCount = CmsMarket & {
+  signup_count: number;
+};
+
 type GalleryItem = {
   id: string;
   src: string;
@@ -59,7 +63,7 @@ function altTextFromFileName(fileName: string) {
 }
 
 export default function AdminMarketsList() {
-  const [markets, setMarkets] = useState<CmsMarket[]>([]);
+  const [markets, setMarkets] = useState<MarketWithSignupCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [galleryContentId, setGalleryContentId] = useState<string | null>(null);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
@@ -75,12 +79,26 @@ export default function AdminMarketsList() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase
-      .from("cms_markets")
-      .select("*")
-      .order("event_date", { ascending: true, nullsFirst: false })
-      .then(({ data }) => {
-        setMarkets(data ?? []);
+    Promise.all([
+      supabase
+        .from("cms_markets")
+        .select("*")
+        .order("event_date", { ascending: true, nullsFirst: false }),
+      supabase
+        .from("cms_market_signups")
+        .select("market_id"),
+    ]).then(([marketsRes, signupsRes]) => {
+        const signupCounts: Record<string, number> = {};
+        for (const signup of signupsRes.data ?? []) {
+          signupCounts[signup.market_id] = (signupCounts[signup.market_id] ?? 0) + 1;
+        }
+
+        setMarkets(
+          ((marketsRes.data ?? []) as CmsMarket[]).map((market) => ({
+            ...market,
+            signup_count: signupCounts[market.id] ?? 0,
+          })),
+        );
         setLoading(false);
       });
 
@@ -553,16 +571,15 @@ export default function AdminMarketsList() {
                     <td className="px-4 py-3 font-medium text-slate-900">{market.title}</td>
                     <td className="px-4 py-3 text-slate-500">{market.location ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
-                      {market.signup_enabled ? (
-                        <Link
-                          href={`/admin/markets/${market.id}/signups`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-blue-600 hover:underline text-xs font-medium"
-                        >
-                          View
-                        </Link>
-                      ) : (
-                        <span className="text-slate-400 text-xs">Off</span>
+                      <Link
+                        href={`/admin/markets/${market.id}/signups`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:underline text-xs font-medium"
+                      >
+                        {market.signup_count}
+                      </Link>
+                      {!market.signup_enabled && (
+                        <span className="ml-1 text-slate-400 text-xs">(off)</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">

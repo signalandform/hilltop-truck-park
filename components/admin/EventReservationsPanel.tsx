@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { CmsEventSignup } from "@/lib/cms";
 
@@ -50,6 +50,11 @@ export function EventReservationsPanel({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const onReservedCountChangeRef = useRef(onReservedCountChange);
+
+  useEffect(() => {
+    onReservedCountChangeRef.current = onReservedCountChange;
+  }, [onReservedCountChange]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -70,7 +75,7 @@ export function EventReservationsPanel({
       setError(eventRes.error.message);
     } else {
       setEvent(eventRes.data);
-      onReservedCountChange?.(eventRes.data.reserved_count);
+      onReservedCountChangeRef.current?.(eventRes.data.reserved_count);
     }
 
     if (signupsRes.error) {
@@ -80,7 +85,7 @@ export function EventReservationsPanel({
     }
 
     setLoading(false);
-  }, [eventId, onReservedCountChange]);
+  }, [eventId]);
 
   useEffect(() => {
     void loadData();

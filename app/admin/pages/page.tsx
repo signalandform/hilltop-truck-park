@@ -12,6 +12,12 @@ type PageRow = {
   updated_at: string;
 };
 
+function humanizeKey(value: string) {
+  return value
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export default function AdminPagesList() {
   const [sections, setSections] = useState<PageRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,8 +78,14 @@ export default function AdminPagesList() {
                   className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer"
                   onClick={() => router.push(`/admin/pages/${s.id}`)}
                 >
-                  <td className="px-4 py-3 font-medium text-slate-900 font-mono text-xs">{s.page_slug}</td>
-                  <td className="px-4 py-3 text-slate-700 font-mono text-xs">{s.section_key}</td>
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-slate-900">{humanizeKey(s.page_slug)}</div>
+                    <div className="font-mono text-xs text-slate-400">{s.page_slug}</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="text-slate-700">{humanizeKey(s.section_key)}</div>
+                    <div className="font-mono text-xs text-slate-400">{s.section_key}</div>
+                  </td>
                   <td className="px-4 py-3 text-slate-500">
                     {new Date(s.updated_at).toLocaleDateString("en-US", {
                       month: "short",

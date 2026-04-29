@@ -15,10 +15,13 @@ const NAV_ITEMS = [
   { href: "/admin/photos", label: "Photo Gallery", icon: "▤" },
   { href: "/admin/schedules", label: "Schedules", icon: "▣" },
   { href: "/admin/pages", label: "Page Content", icon: "☰" },
+  { href: "/admin/crm", label: "CRM", icon: "◇" },
+];
+
+const INBOX_ITEMS = [
   { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
   { href: "/admin/parties", label: "Party Inquiries", icon: "◎" },
   { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },
-  { href: "/admin/crm", label: "CRM", icon: "◇" },
 ];
 
 function NavLink({ href, label, icon }: { href: string; label: string; icon: string }) {
@@ -37,6 +40,48 @@ function NavLink({ href, label, icon }: { href: string; label: string; icon: str
       <span className="text-base">{icon}</span>
       {label}
     </Link>
+  );
+}
+
+function InboxNav() {
+  const pathname = usePathname();
+  const inboxActive = INBOX_ITEMS.some((item) => pathname.startsWith(item.href));
+  const [open, setOpen] = useState(inboxActive);
+
+  useEffect(() => {
+    if (inboxActive) setOpen(true);
+  }, [inboxActive]);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        className={`flex w-full items-center gap-3 px-4 py-2.5 rounded-md text-sm transition-colors ${
+          inboxActive
+            ? "bg-white/10 text-white font-medium"
+            : "text-slate-300 hover:bg-white/5 hover:text-white"
+        }`}
+      >
+        <span className="text-base">✉</span>
+        <span className="flex-1 text-left">Inbox</span>
+        <span
+          className={`text-xs text-slate-400 transition-transform ${open ? "rotate-90" : ""}`}
+          aria-hidden
+        >
+          ▶
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-1 ml-5 space-y-1 border-l border-white/10 pl-2">
+          {INBOX_ITEMS.map((item) => (
+            <NavLink key={item.href} {...item} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -216,6 +261,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.href} {...item} />
           ))}
+          <InboxNav />
         </nav>
 
         <div className="px-3 py-4 border-t border-white/10">

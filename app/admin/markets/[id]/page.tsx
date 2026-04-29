@@ -260,7 +260,7 @@ export default function MarketEditor() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          {!isNew && signupCount > 0 && (
+          {!isNew && (
             <Link
               href={`/admin/markets/${id}/signups`}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"

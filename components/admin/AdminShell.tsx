@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { href: "/admin/contacts", label: "Contact Inbox", icon: "✉" },
   { href: "/admin/parties", label: "Party Inquiries", icon: "◎" },
   { href: "/admin/vendors", label: "Vendor Requests", icon: "⊞" },
+  { href: "/admin/crm", label: "CRM", icon: "◇" },
 ];
 
 function NavLink({ href, label, icon }: { href: string; label: string; icon: string }) {

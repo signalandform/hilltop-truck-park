@@ -81,6 +81,39 @@ export type CmsEventSignup = {
   updated_at: string;
 };
 
+export type CmsCrmSourceType =
+  | "contact_form"
+  | "vendor_request"
+  | "party_booking"
+  | "event_signup"
+  | "market_signup";
+
+export type CmsCrmCustomer = {
+  id: string;
+  email: string;
+  email_normalized: string;
+  name: string | null;
+  phone: string | null;
+  first_seen_at: string;
+  last_seen_at: string;
+  interaction_count: number;
+  source_types: CmsCrmSourceType[];
+  created_at: string;
+  updated_at: string;
+};
+
+export type CmsCrmInteraction = {
+  id: string;
+  customer_id: string;
+  source_type: CmsCrmSourceType;
+  source_table: string;
+  source_id: string;
+  summary: string;
+  metadata: Record<string, unknown>;
+  occurred_at: string;
+  created_at: string;
+};
+
 export type CmsMarketTicketType = {
   id: string;
   market_id: string;

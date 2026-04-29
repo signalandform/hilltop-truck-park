@@ -14,6 +14,7 @@ type Counts = {
   contacts: number;
   parties: number;
   vendors: number;
+  crm: number;
 };
 
 const CONTENT_CARDS = [
@@ -31,6 +32,10 @@ const INBOX_CARDS = [
   { key: "vendors" as const, label: "Vendor Requests", href: "/admin/vendors", description: "View vendor space requests" },
 ];
 
+const CUSTOMER_CARDS = [
+  { key: "crm" as const, label: "CRM Customers", href: "/admin/crm", description: "View customer engagement history" },
+];
+
 export default function AdminDashboard() {
   const [counts, setCounts] = useState<Counts>({
     blog: 0,
@@ -42,12 +47,13 @@ export default function AdminDashboard() {
     contacts: 0,
     parties: 0,
     vendors: 0,
+    crm: 0,
   });
   const [unread, setUnread] = useState({ contacts: 0, parties: 0, vendors: 0 });
 
   useEffect(() => {
     async function load() {
-      const [b, e, m, t, s, p, c, pi, v, cu, piu, vu] = await Promise.all([
+      const [b, e, m, t, s, p, c, pi, v, crm, cu, piu, vu] = await Promise.all([
         supabase.from("cms_blog_posts").select("id", { count: "exact", head: true }),
         supabase.from("cms_events").select("id", { count: "exact", head: true }),
         supabase.from("cms_markets").select("id", { count: "exact", head: true }),
@@ -57,6 +63,7 @@ export default function AdminDashboard() {
         supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }),
         supabase.from("cms_party_inquiries").select("id", { count: "exact", head: true }),
         supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("cms_crm_customers").select("id", { count: "exact", head: true }),
         supabase.from("cms_contact_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
         supabase.from("cms_party_inquiries").select("id", { count: "exact", head: true }).eq("is_read", false),
         supabase.from("cms_vendor_submissions").select("id", { count: "exact", head: true }).eq("is_read", false),
@@ -71,6 +78,7 @@ export default function AdminDashboard() {
         contacts: c.count ?? 0,
         parties: pi.count ?? 0,
         vendors: v.count ?? 0,
+        crm: crm.count ?? 0,
       });
       setUnread({
         contacts: cu.count ?? 0,
@@ -106,7 +114,7 @@ export default function AdminDashboard() {
       </div>
 
       <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-3">Inbox</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
         {INBOX_CARDS.map((card) => (
           <Link
             key={card.key}
@@ -122,6 +130,25 @@ export default function AdminDashboard() {
               )}
             </div>
             <div className="text-sm font-medium text-slate-900 group-hover:text-blue-600 transition-colors mt-1">
+              {card.label}
+            </div>
+            <div className="text-xs text-slate-500 mt-1">{card.description}</div>
+          </Link>
+        ))}
+      </div>
+
+      <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-3">Customers</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {CUSTOMER_CARDS.map((card) => (
+          <Link
+            key={card.key}
+            href={card.href}
+            className="bg-white rounded-xl border border-slate-200 p-6 hover:border-slate-300 hover:shadow-sm transition-all group"
+          >
+            <div className="text-3xl font-bold text-slate-900 mb-1">
+              {counts[card.key]}
+            </div>
+            <div className="text-sm font-medium text-slate-900 group-hover:text-blue-600 transition-colors">
               {card.label}
             </div>
             <div className="text-xs text-slate-500 mt-1">{card.description}</div>
